@@ -1,42 +1,24 @@
-FROM node:20-alpine AS base
+# Use Node 20 on Alpine as the base image
+FROM node:20-alpine
 
-FROM base AS deps 
-
-RUN apk add --no-cache libc6-compat
-
+# Set the working directory inside the container
 WORKDIR /app
 
-COPY package.json ./
+# Copy the package.json and package-lock.json files to the container
+COPY package.json package-lock.json ./
 
-RUN npm update && npm install
+# Install dependencies
+RUN npm install
 
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# Copy the rest of the application files to the container
 COPY . .
 
+# Build the Next.js application
 RUN npm run build
 
-FROM base AS runner
-WORKDIR /app
-
-ENV NODE_ENV production
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-COPY --from=builder /app/public ./public
-
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
-
+# Expose port 3000 for the application
 EXPOSE 3000
 
-ENV PORT 3000
-
-CMD ["node", "server.js"]
+# Start the Next.js app in production mode
+CMD ["npm", "run", "dev"]
 

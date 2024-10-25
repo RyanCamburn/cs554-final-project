@@ -4,6 +4,13 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+Running the container in Docker:
+
+```
+docker build -t aad-admin . 
+docker run -p 3000:3000 aad-admin
+```
+
 First, run the development server:
 
 ```bash
