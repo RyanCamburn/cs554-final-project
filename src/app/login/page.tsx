@@ -1,6 +1,6 @@
 "use client";
 
-import { getRedirectResult, signInWithRedirect } from "firebase/auth";
+import { getRedirectResult, signInWithPopup } from "firebase/auth";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -16,21 +16,32 @@ export default function SignIn() {
         return;
       }
 
-      fetch("/api/auth", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${await userCred.user.getIdToken()}`,
-        },
-      }).then((response) => {
-        if (response.status === 200) {
-          router.push("/app");
-        }
-      });
+      try {
+        await fetch("/api/auth", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${await userCred.user.getIdToken()}`,
+          },
+        });
+      } catch (error) {
+        console.error(error);
+      }
+
+      // fetch("/api/auth", {
+      //   method: "POST",
+      //   headers: {
+      //     Authorization: `Bearer ${await userCred.user.getIdToken()}`,
+      //   },
+      // }).then((response) => {
+      //   if (response.status === 200) {
+      //     router.push("/app");
+      //   }
+      // });
     });
   }, []); // FIXME: Do we need to add router to the dependency array?
 
   function signIn() {
-    signInWithRedirect(auth, provider);
+    signInWithPopup(auth, provider);
   }
 
   return (
