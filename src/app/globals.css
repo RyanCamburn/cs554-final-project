@@ -1,4 +1,7 @@
-@tailwind base;
+/* https://github.com/orgs/mantinedev/discussions/1672 */
+@layer tailwind {
+  @tailwind base;
+}
 @tailwind components;
 @tailwind utilities;
 
