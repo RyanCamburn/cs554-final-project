@@ -9,6 +9,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loginWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
 
+  // TODO: Refactor all auth functions to a single file
   const handleLogin = async () => {
     try {
       const res = await loginWithEmailAndPassword(email, password);
