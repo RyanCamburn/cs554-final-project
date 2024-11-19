@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState }from "react";
+import { LoginForm } from "../components/LoginForm";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/config";
 
@@ -22,8 +23,9 @@ export default function Login() {
   }
 
   return (
-    <div>
-      <h1>Login</h1>
+    <div className="px-64">
+      <LoginForm />
+      {/* <h1>Login</h1>
       <input 
         type="text"
         placeholder="Email"
@@ -36,7 +38,7 @@ export default function Login() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleLogin}>Login</button> */}
     </div>
   )
 }
