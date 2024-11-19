@@ -3,6 +3,7 @@
 import React, { useState }from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/config";
+import { RegistrationForm } from "../components/RegistrationForm";
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -22,7 +23,8 @@ export default function Register() {
 
   return (
     <div>
-      <h1>Register</h1>
+      <RegistrationForm />
+      {/* <h1>Register</h1>
       <input 
         type="text"
         placeholder="Email"
@@ -35,7 +37,7 @@ export default function Register() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button onClick={handleRegister}>Register</button>
+      <button onClick={handleRegister}>Register</button> */}
     </div>
   )
 }

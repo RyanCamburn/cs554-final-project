@@ -10,8 +10,27 @@ import {
   Group,
   Button,
 } from '@mantine/core';
+import { useState } from 'react';
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase/config";
 
 export function LoginForm() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const [loginWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
+
+  const handleLogin = async () => {
+    try {
+      const res = await loginWithEmailAndPassword(email, password);
+      console.log(res);
+      setEmail('');
+      setPassword('');
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
   return (
     <Container size={420} my={40}>
       <Title ta="center" className="font-greycliff font-extrabold">
@@ -25,15 +44,15 @@ export function LoginForm() {
       </Text>
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md" className="bg-gray-800 border-black">
-        <TextInput label="Email" placeholder="you@mantine.dev" required />
-        <PasswordInput label="Password" placeholder="Your password" required mt="md" />
+        <TextInput label="Email" placeholder="you@mantine.dev" onChange={(event) => setEmail(event.currentTarget.value)} required />
+        <PasswordInput label="Password" placeholder="Your password" onChange={(event) => setPassword(event.currentTarget.value)}required mt="md" />
         <Group justify="space-between" mt="lg">
           <Checkbox label="Remember me" />
           <Anchor component="button" size="sm">
             Forgot password?
           </Anchor>
         </Group>
-        <Button fullWidth mt="xl">
+        <Button fullWidth mt="xl" onClick={() => handleLogin()}>
           Sign in
         </Button>
       </Paper>
