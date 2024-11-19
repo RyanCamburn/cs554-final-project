@@ -23,12 +23,19 @@ export function LoginForm() {
   const handleLogin = async () => {
     try {
       const res = await loginWithEmailAndPassword(email, password);
-      console.log(res);
-      setEmail('');
-      setPassword('');
+      if (!res?.user) {
+        console.error('Login failed: No user returned');
+        return;
+      }
+      const token = await res.user.getIdToken();
+      await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
     } catch (error) {
-      console.error(error);
-    }
+      console.error('Login error:', error.message);
+    }    
   }
   
   return (
