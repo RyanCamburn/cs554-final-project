@@ -14,7 +14,7 @@ if (!initializeApp.length) {
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const { token } = req.body;
+    const { token } = JSON.parse(req.body);
 
     try {
       const decodedToken = await getAuth().verifyIdToken(token);

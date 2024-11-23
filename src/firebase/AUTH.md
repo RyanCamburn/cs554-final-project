@@ -1,3 +1,3 @@
-# Documentation for Authentication
+# Authentication Flow
 
-Super-Condensed Tutorial that has the functionality that we want: https://www.youtube.com/watch?v=TLGFTH4s_0Y but with a different tech stack
+When a user logs in, Firebase authentication returns a token if they are a registered user. This token is stored in the cookies, and is sent to the backend/server on every request. The token tells the server if the user is allowed to perform certain actions or not.

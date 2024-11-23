@@ -22,20 +22,21 @@ export function LoginForm() {
 
   const handleLogin = async () => {
     try {
-      const res = await loginWithEmailAndPassword(email, password);
-      if (!res?.user) {
-        console.error('Login failed: No user returned');
-        return;
+      // FIXME: is react-firebase-hooks safe?
+      const response = await loginWithEmailAndPassword(email, password);
+      if (response?.user) {
+        const token = await response.user.getIdToken();
+        await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token: token }),
+        });
       }
-      const token = await res.user.getIdToken();
-      await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token }),
-      });
     } catch (error) {
-      console.error('Login error:', error.message);
-    }    
+      console.error(error);
+    }
   }
   
   return (

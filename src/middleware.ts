@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/protected']
+  matcher: ['/protected'] // Whatever route you want to be protected by the above middleware, add here
 };
 
 // TODO: is a library like next-firebase-auth-edge necessary?
