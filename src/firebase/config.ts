@@ -1,3 +1,5 @@
+// This initalizes a firebase app with the Firebase Client SDK which has less permissions than the Firebase Admin SDK
+
 import { getApps, getApp, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
