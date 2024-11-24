@@ -12,7 +12,7 @@ import {
 } from '@mantine/core';
 import { useState } from 'react';
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/config";
+import { auth } from "@/firebase/client-config";
 
 export function LoginForm() {
   const [email, setEmail] = useState('');

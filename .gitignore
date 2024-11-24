@@ -42,3 +42,5 @@ next-env.d.ts
 
 # Firebase Authentication
 firebase-service-account.json
+
+.vscode
