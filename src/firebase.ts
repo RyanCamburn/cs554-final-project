@@ -1,4 +1,8 @@
 import { initializeApp } from "firebase/app";
-import { clientConfig } from "./auth-config";
+import { clientConfig, emulatorConfig } from "./auth-config";
 
-export const app = initializeApp(clientConfig);
+export const app = initializeApp(
+  process.env.NEXT_PUBLIC_NODE_ENV === "development"
+    ? emulatorConfig
+    : clientConfig
+);

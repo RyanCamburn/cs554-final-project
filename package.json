@@ -15,7 +15,7 @@
     "cookie": "^1.0.1",
     "firebase": "^11.0.1",
     "firebase-admin": "^12.7.0",
-    "firebase-tools": "^13.24.2",
+    "firebase-tools": "^13.28.0",
     "next": "15.0.1",
     "next-firebase-auth-edge": "^1.8.2",
     "react": "^18.3.1",

@@ -3,6 +3,7 @@
 import { Button } from "@mantine/core";
 
 export default function Protected() {
+  // TODO: Should logout button be in its own component?
   const handleLogout = async (event) => {
     event.preventDefault();
     try {

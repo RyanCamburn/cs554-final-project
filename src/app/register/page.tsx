@@ -2,9 +2,14 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  connectAuthEmulator,
+} from "firebase/auth";
 import { app } from "../../firebase";
 import { useRouter } from "next/navigation";
+import { get } from "http";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -24,7 +29,11 @@ export default function Register() {
     }
 
     try {
-      await createUserWithEmailAndPassword(getAuth(app), email, password);
+      const auth = getAuth(app);
+      if (process.env.NEXT_PUBLIC_NODE_ENV === "development") {
+        connectAuthEmulator(auth, "http://localhost:9099");
+      }
+      await createUserWithEmailAndPassword(auth, email, password);
       router.push("/login");
     } catch (e) {
       setError((e as Error).message);

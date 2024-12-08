@@ -25,3 +25,8 @@ export const clientConfig = {
   // databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
   messagingSenderId: process.env.NEXT_PUBLIC_MESSAGING_SENDER_ID,
 };
+
+export const emulatorConfig = {
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+  apiKey: process.env.NEXT_PUBLIC_API_KEY!, // FIXME: Emulators says not to use production credentials
+};
