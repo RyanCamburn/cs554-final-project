@@ -1,37 +1,53 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { getAuth } from "firebase/auth";
-// import { firebase } from "@/firebase/admin-config";
-// FIXME: Middleware does not like importing the above server node code
-// Solutions online point towards using firebase-next-auth-edge
-// https://github.com/vercel/next.js/issues/67260
+import { NextResponse, NextRequest } from "next/server";
+import {
+  authMiddleware,
+  redirectToHome,
+  redirectToLogin,
+} from "next-firebase-auth-edge";
+import { clientConfig, serverConfig } from "./auth-config";
 
-// I considered creating an endpoint and then calling that endpoint in the middleware
-// however that is bad for peformance so the auth-edge library may be the best way to go
-
-// Supabase seems like the better alternative for Next.js
-// Or maybe just need to understand session management better:
-// https://firebase.google.com/docs/auth/admin/manage-cookies
-// https://www.reddit.com/r/nextjs/comments/1cmn7ow/how_to_firebase_auth_next_auth_any_sugggestions/
+const PUBLIC_PATHS = ["/register", "/login"];
 
 export async function middleware(request: NextRequest) {
-  const authToken = request.cookies.get('token')?.value;
+  return authMiddleware(request, {
+    loginPath: "/api/login",
+    logoutPath: "/api/logout",
+    apiKey: clientConfig.apiKey,
+    cookieName: serverConfig.cookieName,
+    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+    cookieSerializeOptions: serverConfig.cookieSerializeOptions,
+    serviceAccount: serverConfig.serviceAccount,
+    handleValidToken: async ({ token, decodedToken, customToken }, headers) => {
+      // Authenticated user should not be able to access /login, /register and /reset-password routes
+      if (PUBLIC_PATHS.includes(request.nextUrl.pathname)) {
+        return redirectToHome(request);
+      }
 
-  // Similar to the login, we are going to call an api endpoint to verify the token
+      return NextResponse.next({
+        request: {
+          headers,
+        },
+      });
+    },
+    handleInvalidToken: async (reason) => {
+      console.info("Missing or malformed credentials", { reason });
 
-  if (!authToken) {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
-  
-  try {
-    await getAuth().verifyIdToken(authToken);
-    return NextResponse.next();
-  } catch (error) {
-    console.error("Error verifying token", error);
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
+      return redirectToLogin(request, {
+        path: "/login",
+        publicPaths: PUBLIC_PATHS,
+      });
+    },
+    handleError: async (error) => {
+      console.error("Unhandled authentication error", { error });
+
+      return redirectToLogin(request, {
+        path: "/login",
+        publicPaths: PUBLIC_PATHS,
+      });
+    },
+  });
 }
 
 export const config = {
-  matcher: ['/protected'] // Whatever route you want to be protected by the above middleware, add here
+  matcher: ["/", "/((?!_next|api|.*\\.).*)", "/api/login", "/api/logout"],
 };
