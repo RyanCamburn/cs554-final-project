@@ -64,6 +64,7 @@ The Mentor-Mentee CRM project aims to develop a Customer Relationship Manager (C
 ## Core Features
 - **Authentication**: Users (mentors, mentees, and admins) will register and log in through Firebase Authentication, gaining access based on their role.
 - **Announcements Page**: This page will allow admins to post important updates, announcements, and notifications, which will be visible to both mentors and mentees.
+- **Chat Feature**: Mentors and mentees can message each other directly though the application
 - **Mentor/Mentee Directory**: We will implement a searchable directory for users to view profiles of all mentors and mentees, enhancing communication and networking within the program.
 - **Profile Pages**: Each user will have a personalized profile page displaying their information, including contact details, progress, and key achievements.
 - **Settings Page**: This feature will allow users to adjust their account settings and preferences, such as profile visibility and notification preferences.
