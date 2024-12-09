@@ -4,12 +4,8 @@ import { useState } from "react";
 import { isEmail, useForm } from "@mantine/form";
 import { TextInput, Group, Button, PasswordInput } from "@mantine/core";
 import { useRouter } from "next/navigation";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  connectAuthEmulator,
-} from "firebase/auth";
-import { app } from "../../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase";
 
 interface LoginFormValues {
   email: string;
@@ -34,17 +30,12 @@ export default function Login() {
     setError("");
     try {
       const { email, password } = values;
-      // TODO: The emulator enablement should be moved to a separate file like in the starter example
-      // FIXME: Getting internal server error when trying to login with emulators
-      const auth = getAuth(app);
-      if (process.env.NEXT_PUBLIC_NODE_ENV === "development") {
-        connectAuthEmulator(auth, "http://localhost:9099");
-      }
       const credential = await signInWithEmailAndPassword(
         auth,
         email,
         password
       );
+
       const idToken = await credential.user.getIdToken();
 
       await fetch("/api/login", {

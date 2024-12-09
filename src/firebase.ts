@@ -1,8 +1,12 @@
 import { initializeApp } from "firebase/app";
-import { clientConfig, emulatorConfig } from "./auth-config";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
+import { clientConfig } from "./auth-config";
 
-export const app = initializeApp(
-  process.env.NEXT_PUBLIC_NODE_ENV === "development"
-    ? emulatorConfig
-    : clientConfig
-);
+const app = initializeApp(clientConfig);
+const auth = getAuth(app);
+
+if (process.env.NEXT_PUBLIC_NODE_ENV === "development") {
+  connectAuthEmulator(auth, "http://localhost:9099");
+}
+
+export { app, auth };
