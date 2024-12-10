@@ -2,22 +2,9 @@
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Firebase Emulators
-
-TODO: Instructions
-
-firebase login
-firebase projects:list
-firebase emulators:start
-
-Authentication Port: 9099
-Firestore Port: 8080
-Emulator UI: http://localhost:4000
-App URL: http://localhost:3000
-
 ## Getting Started
 
-Running the container in Docker:
+### Running the container in Docker:
 
 ```
 docker build -t aad-admin .
@@ -37,6 +24,37 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Setup your .env.local file:
+
+1. Make a copy of .env.local.example and rename it to .env.local
+2. Follow the instructions to fill in the necessary environment variables
+
+### Running the Firebase Emulators:
+
+We make use of the [Firebase Local Emulator Suite](https://firebase.google.com/docs/emulator-suite) for development to avoid interacting with the production Firebase services. You can change the application's Firebase configuration to point to the local emulators by setting the `NEXT_PUBLIC_NODE_ENV` environment variable to `development` in your `.env.local` file.
+
+To run the emulators:
+
+1. Install the Firebase CLI: `npm install -g firebase-tools`
+2. Authenticate with Firebase and list your projects:
+
+```bash
+firebase login
+firebase projects:list
+firebase emulators:start
+```
+
+The emulators will start running on the following ports:
+
+- Authentication Port: 9099
+- Firestore Port: 8080
+- Emulator UI: http://localhost:4000
+- App URL: http://localhost:3000
+
+### Running the Redis Server:
+
+TODO:
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
@@ -109,3 +127,7 @@ _For reference of conventional branch patterns vs. what our team is using:_
 | Features      | `feature/[feature-name]`     |
 | Bug Fixes     | `bugfix/[bug-name]`          |
 | Documentation | `docs/[documentation-topic]` |
+
+```
+
+```
