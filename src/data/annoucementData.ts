@@ -8,12 +8,12 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { db } from "../firebase"; // Adjust path as necessary
+import { db } from "../firebase";
 
 type AnnouncementType = "info" | "warning" | "error";
 
 interface Announcement {
-  _id?: string; // Optional for read results
+  _id?: string;
   type: AnnouncementType;
   message: string;
   createdAt?: Timestamp;
