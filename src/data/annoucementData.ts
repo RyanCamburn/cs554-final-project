@@ -13,7 +13,7 @@ import { db } from '../firebase'; // Adjust path as necessary
 type AnnouncementType = 'info' | 'warning' | 'error';
 
 interface Announcement {
-  _id?: string; // Optional for read results
+  _id?: string;
   type: AnnouncementType;
   message: string;
   createdAt?: Timestamp;
