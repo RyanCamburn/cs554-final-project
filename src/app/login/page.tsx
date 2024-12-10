@@ -12,6 +12,7 @@ interface LoginFormValues {
   password: string;
 }
 
+// TODO: It might be better to handle login with a server action: https://next-firebase-auth-edge-docs.vercel.app/docs/getting-started/login-with-server-action
 export default function Login() {
   const [error, setError] = useState("");
   const router = useRouter();
@@ -36,6 +37,9 @@ export default function Login() {
         email,
         password
       );
+
+      // TODO: Here the user is logged in, this should be saved to their context
+      console.log(credential);
 
       const idToken = await credential.user.getIdToken();
 
