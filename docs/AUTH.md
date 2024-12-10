@@ -1,0 +1,5 @@
+- Using Firebase Auth
+- Using [next-firebase-auth-edge library](https://github.com/awinogrodzki/next-firebase-auth-edge/tree/main)
+- Instead of storing roles (admin, mentor, mentee) user objects going to use Firebase Claims to manage roles
+  - Don't store additional information in the claims cause it can cause performance issues
+  - https://firebase.google.com/docs/auth/admin/custom-claims

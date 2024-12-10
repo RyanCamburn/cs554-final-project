@@ -8,8 +8,9 @@ import { AuthProvider } from "./sessions/AuthProvider";
 import { filterStandardClaims } from "next-firebase-auth-edge/lib/auth/claims";
 import { Tokens, getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
+import { serverConfig } from "../auth-config";
 
-const toUser = ({ decodedToken }: Tokens): User => {
+const getUserSession = ({ decodedToken }: Tokens): User => {
   const {
     uid,
     email,
@@ -17,9 +18,10 @@ const toUser = ({ decodedToken }: Tokens): User => {
     email_verified: emailVerified,
     phone_number: phoneNumber,
     name: displayName,
-    source_sign_in_provider: signInProvider,
+    source_sign_in_provider: signInProvider, // FIXME: this exposes the password in the emulator
   } = decodedToken;
 
+  // This abstracts all of the custom claims into a single object
   const customClaims = filterStandardClaims(decodedToken);
 
   return {
@@ -55,21 +57,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Since Next.js 15, `cookies` function returns a Promise, so we need to precede it with `await`.
+  // This will be passed into the AuthProvider to allow session management
   const tokens = await getTokens(await cookies(), {
     apiKey: process.env.NEXT_PUBLIC_API_KEY!,
-    cookieName: process.env.NEXT_PUBLIC_AUTH_COOKIE_NAME!,
-    cookieSignatureKeys: [
-      process.env.NEXT_PUBLIC_AUTH_COOKIE_SIGNATURE_KEY_CURRENT!,
-      process.env.NEXT_PUBLIC_AUTH_COOKIE_SIGNATURE_KEY_PREVIOUS!,
-    ],
-    serviceAccount: {
-      projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
-      clientEmail: process.env.NEXT_PUBLIC_CLIENT_EMAIL!,
-      privateKey: process.env.NEXT_PUBLIC_PRIVATE_KEY?.replace(/\\n/g, "\n")!,
-    },
+    ...serverConfig,
   });
-  const user = tokens ? toUser(tokens) : null;
+  const user = tokens ? getUserSession(tokens) : null;
 
   return (
     <html lang="en" suppressHydrationWarning>
