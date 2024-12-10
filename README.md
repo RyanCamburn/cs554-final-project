@@ -4,10 +4,10 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-Running the container in Docker:
+### Running the container in Docker:
 
 ```
-docker build -t aad-admin . 
+docker build -t aad-admin .
 docker run -p 3000:3000 aad-admin
 ```
 
@@ -24,6 +24,37 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Setup your .env.local file:
+
+1. Make a copy of .env.local.example and rename it to .env.local
+2. Follow the instructions to fill in the necessary environment variables
+
+### Running the Firebase Emulators:
+
+We make use of the [Firebase Local Emulator Suite](https://firebase.google.com/docs/emulator-suite) for development to avoid interacting with the production Firebase services. You can change the application's Firebase configuration to point to the local emulators by setting the `NEXT_PUBLIC_NODE_ENV` environment variable to `development` in your `.env.local` file.
+
+To run the emulators:
+
+1. Install the Firebase CLI: `npm install -g firebase-tools`
+2. Authenticate with Firebase and list your projects:
+
+```bash
+firebase login
+firebase projects:list
+firebase emulators:start
+```
+
+The emulators will start running on the following ports:
+
+- Authentication Port: 9099
+- Firestore Port: 8080
+- Emulator UI: http://localhost:4000
+- App URL: http://localhost:3000
+
+### Running the Redis Server:
+
+TODO:
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
@@ -44,9 +75,10 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-The Mentor-Mentee CRM project aims to develop a Customer Relationship Manager (CRM) to enhance communication between participants and streamline the tracking of jobs, internships, and volunteer outcomes for mentees. This project is in collaboration with Asian American Dream (AAD), a non-profit organization running a mentorship program that connects students with industry professionals. We are creating this web application as our final project for CS 554 - Web Programming II. 
+The Mentor-Mentee CRM project aims to develop a Customer Relationship Manager (CRM) to enhance communication between participants and streamline the tracking of jobs, internships, and volunteer outcomes for mentees. This project is in collaboration with Asian American Dream (AAD), a non-profit organization running a mentorship program that connects students with industry professionals. We are creating this web application as our final project for CS 554 - Web Programming II.
 
 **Team Members**
+
 - Christian Apostol
 - Shawn Aviles
 - Ryan Camburn
@@ -54,6 +86,7 @@ The Mentor-Mentee CRM project aims to develop a Customer Relationship Manager (C
 - Marcus San Antonio
 
 ## Technologies
+
 - **Next.js w/ TypeScript**: Core framework for building the full-stack web application.
 - **Firebase Authentication**: Handles role-based access control.
 - **TailwindCSS**: Used for styling the User Interface.
@@ -62,6 +95,7 @@ The Mentor-Mentee CRM project aims to develop a Customer Relationship Manager (C
 - **Docker**: Containerizes the application for consistent development, testing, and production environments.
 
 ## Core Features
+
 - **Authentication**: Users (mentors, mentees, and admins) will register and log in through Firebase Authentication, gaining access based on their role.
 - **Announcements Page**: This page will allow admins to post important updates, announcements, and notifications, which will be visible to both mentors and mentees.
 - **Mentor/Mentee Directory**: We will implement a searchable directory for users to view profiles of all mentors and mentees, enhancing communication and networking within the program.
@@ -71,24 +105,29 @@ The Mentor-Mentee CRM project aims to develop a Customer Relationship Manager (C
 - **Dockerization**: Containerizing the application using Docker will help with consistent development environments and streamlined deployment processes.
 
 ## Extra/Reach Features
+
 - **Growth Visualization**: A potential additional feature is a visual component, such as a growth graph or collage of companies that mentors work at, enhancing user engagement and program appeal.
 - **Form Builder**: Admins will have the ability to create and manage custom forms for mentees and mentors to submit feedback, event attendance, and track outcomes such as job placements.
 - **Mobile Responsiveness**: Ensuring the platform is fully responsive on mobile devices will be critical for mentees and mentors accessing the platform on the go.
 
 ## ## Branch Naming Conventions:
 
-| Category       | Team's Branch Pattern              |
-|----------------|------------------------------------|
-| Main Branch    | `marcus`                           |
-| Features       | `marcusNew/[feature-name]`         |
-| Bug Fixes      | `mets/[bug-name]`                  |
-| Documentation  | `sanAntonio/[documentation-topic]` |
+| Category      | Team's Branch Pattern              |
+| ------------- | ---------------------------------- |
+| Main Branch   | `marcus`                           |
+| Features      | `marcusNew/[feature-name]`         |
+| Bug Fixes     | `mets/[bug-name]`                  |
+| Documentation | `sanAntonio/[documentation-topic]` |
 
-*For reference of conventional branch patterns vs. what our team is using:*
+_For reference of conventional branch patterns vs. what our team is using:_
 
-| Category       | Convential Branch Pattern          |
-|----------------|------------------------------------|
-| Main Branch    | `main`                             |
-| Features       | `feature/[feature-name]`           |
-| Bug Fixes      | `bugfix/[bug-name]`                |
-| Documentation  | `docs/[documentation-topic]`       |
+| Category      | Convential Branch Pattern    |
+| ------------- | ---------------------------- |
+| Main Branch   | `main`                       |
+| Features      | `feature/[feature-name]`     |
+| Bug Fixes     | `bugfix/[bug-name]`          |
+| Documentation | `docs/[documentation-topic]` |
+
+```
+
+```

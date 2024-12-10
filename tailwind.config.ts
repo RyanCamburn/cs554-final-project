@@ -12,6 +12,9 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        greycliff: ['Greycliff CF', 'var(--mantine-font-family)'],
+      },
     },
   },
   plugins: [],
