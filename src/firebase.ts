@@ -1,6 +1,6 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
+import {connectFirestoreEmulator, getFirestore} from "firebase/firestore";
 import { clientConfig } from "./auth-config";
 import type { FirebaseApp } from "firebase/app";
 import type { Auth } from "firebase/auth";
@@ -24,6 +24,11 @@ if (!getApps().length) {
   app = getApp();
   auth = getAuth(app);
   db = getFirestore(app);
+}
+
+const db = getFirestore(app);
+if (process.env.NEXT_PUBLIC_NODE_ENV === "development") {
+  connectFirestoreEmulator(db, "localhost", 8080);
 }
 
 export { app, auth, db };

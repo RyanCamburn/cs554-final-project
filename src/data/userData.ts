@@ -1,64 +1,94 @@
-import {
-  addDoc,
-  collection,
-  Timestamp,
-  doc,
-  getDoc,
-  getDocs,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
-import { db } from "../firebase";
+import { getFirestore, collection, addDoc, doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { User } from '../types';
+import { db } from '../firebase';
 
-interface User {
-  _id?: string;
-  role: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber?: string;
-  gender: string;
-  industry?: string;
-  permissions: string;
-  assignees?: string;
-  createdAt?: Timestamp;
-  updatedAt?: Timestamp;
-}
+/**
+ * Create a new user.
+ * @param userData The data of the user to be created.
+ * @returns The newly created user.
+ */
+export const createUser = async (userData: User): Promise<User> => {
+  try {
+    const newUser: User = {
+      ...userData,
+      createdAt: new Date(),
+    };
 
-export async function createUser(
-  user: Omit<User, "_id" | "createdAt" | "updatedAt">
-): Promise<string> {
-  const newUser = {
-    ...user,
-    createdAt: Timestamp.now(),
-    updatedAt: Timestamp.now(),
+    const docRef = await addDoc(collection(db, 'users'), newUser);
+
+    return { _id: docRef.id, ...newUser };
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
+/**
+ * Get a user by ID.
+ * @param id The ID of the user.
+ * @returns The user data.
+ */
+export const getUserById = async (id: string): Promise<User | null> => {
+  try {
+    const docRef = doc(db, 'users', id);
+    const docSnap = await getDoc(docRef);
+    
+    if (!docSnap.exists()) {
+      return null;
+    }
+
+    const data = docSnap.data();
+    const user: User = {
+      _id: docSnap.id,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      gender: data.gender,
+      permissions: data.permissions,
+      role: data.role,
+      createdAt: data.createdAt?.toDate(), 
+      updatedAt: data.updatedAt?.toDate()
+    };
+
+    return user;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
+/**
+ * Update a user's data.
+ * @param id The ID of the user to be updated.
+ * @param userData The data to update the user with.
+ * @returns The updated user data.
+ */
+export const updateUser = async (id: string, userData: User): Promise<User> => {
+    try {
+      const updatedUser: Partial<User> = {
+        ...userData,
+        updatedAt: new Date(),
+      };
+  
+      const docRef = doc(db, 'users', id);
+      await updateDoc(docRef, updatedUser);
+  
+      return { _id: id, ...userData, updatedAt: updatedUser.updatedAt };
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
   };
+  
 
-  const docRef = await addDoc(collection(db, "users"), newUser);
-  return docRef.id;
-}
-
-export async function getAllUsers(): Promise<User[]> {
-  const snapshot = await getDocs(collection(db, "users"));
-  return snapshot.docs.map((doc) => ({ _id: doc.id, ...doc.data() } as User));
-}
-
-export async function getUserById(id: string): Promise<User | null> {
-  const docRef = doc(db, "users", id);
-  const snapshot = await getDoc(docRef);
-  if (!snapshot.exists()) return null;
-  return { _id: snapshot.id, ...snapshot.data() } as User;
-}
-
-export async function updateUser(
-  id: string,
-  updatedFields: Partial<Omit<User, "_id" | "createdAt">>
-): Promise<void> {
-  const docRef = doc(db, "users", id);
-  await updateDoc(docRef, { ...updatedFields, updatedAt: Timestamp.now() });
-}
-
-export async function deleteUser(id: string): Promise<void> {
-  const docRef = doc(db, "users", id);
-  await deleteDoc(docRef);
-}
+/**
+ * Delete a user by ID.
+ * @param id The ID of the user to delete.
+ * @returns A message indicating that the user was deleted.
+ */
+export const deleteUser = async (id: string): Promise<string> => {
+  try {
+    const docRef = doc(db, 'users', id);
+    await deleteDoc(docRef);
+    return 'User deleted successfully';
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
