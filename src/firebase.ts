@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
+import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { clientConfig } from "./auth-config";
 
 const app = initializeApp(clientConfig);
@@ -9,4 +10,10 @@ if (process.env.NEXT_PUBLIC_NODE_ENV === "development") {
   connectAuthEmulator(auth, "http://localhost:9099");
 }
 
-export { app, auth };
+const db = getFirestore(app);
+
+if (process.env.NEXT_PUBLIC_NODE_ENV === "development") {
+  connectFirestoreEmulator(db, "localhost", 8080);
+}
+
+export { app, auth, db };

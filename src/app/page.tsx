@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Button } from "@mantine/core";
 import LogoutButton from "./components/LogoutButton";
+import AnnouncementActions from "./components/AnnouncementActions";
 
 export default function Home() {
   // TODO: Show user information from the session here
@@ -53,6 +54,7 @@ export default function Home() {
           </a>
           <Button>Mantine</Button>
           <LogoutButton />
+          <AnnouncementActions />
         </div>
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
