@@ -7,13 +7,13 @@ import {
   getDocs,
   updateDoc,
   deleteDoc,
-} from "firebase/firestore";
-import { db } from "../firebase";
+} from 'firebase/firestore';
+import { db } from '../firebase'; // Adjust path as necessary
 
-type AnnouncementType = "info" | "warning" | "error";
+type AnnouncementType = 'info' | 'warning' | 'error';
 
 interface Announcement {
-  _id?: string;
+  _id?: string; // Optional for read results
   type: AnnouncementType;
   message: string;
   createdAt?: Timestamp;
@@ -24,10 +24,10 @@ interface Announcement {
 }
 
 export async function createAnnouncement(
-  announcement: Omit<Announcement, "_id" | "createdAt" | "updatedAt">
+  announcement: Omit<Announcement, '_id' | 'createdAt' | 'updatedAt'>,
 ): Promise<string> {
-  if (!announcement.message || announcement.message.trim() === "") {
-    throw new Error("The message field must not be empty.");
+  if (!announcement.message || announcement.message.trim() === '') {
+    throw new Error('The message field must not be empty.');
   }
 
   const newAnnouncement = {
@@ -36,21 +36,21 @@ export async function createAnnouncement(
     updatedAt: Timestamp.now(),
   };
 
-  const docRef = await addDoc(collection(db, "announcements"), newAnnouncement);
+  const docRef = await addDoc(collection(db, 'announcements'), newAnnouncement);
   return docRef.id;
 }
 
 export async function getAllAnnouncements(): Promise<Announcement[]> {
-  const snapshot = await getDocs(collection(db, "announcements"));
+  const snapshot = await getDocs(collection(db, 'announcements'));
   return snapshot.docs.map(
-    (doc) => ({ _id: doc.id, ...doc.data() } as Announcement)
+    (doc) => ({ _id: doc.id, ...doc.data() }) as Announcement,
   );
 }
 
 export async function getAnnouncementById(
-  id: string
+  id: string,
 ): Promise<Announcement | null> {
-  const docRef = doc(db, "announcements", id);
+  const docRef = doc(db, 'announcements', id);
   const snapshot = await getDoc(docRef);
   if (!snapshot.exists()) return null;
   return { _id: snapshot.id, ...snapshot.data() } as Announcement;
@@ -58,16 +58,16 @@ export async function getAnnouncementById(
 
 export async function updateAnnouncement(
   id: string,
-  updatedFields: Partial<Omit<Announcement, "_id" | "createdAt">>
+  updatedFields: Partial<Omit<Announcement, '_id' | 'createdAt'>>,
 ): Promise<void> {
-  if (!updatedFields.message || updatedFields.message.trim() === "") {
-    throw new Error("The message field must not be empty.");
+  if (!updatedFields.message || updatedFields.message.trim() === '') {
+    throw new Error('The message field must not be empty.');
   }
-  const docRef = doc(db, "announcements", id);
+  const docRef = doc(db, 'announcements', id);
   await updateDoc(docRef, { ...updatedFields, updatedAt: Timestamp.now() });
 }
 
 export async function deleteAnnouncement(id: string): Promise<void> {
-  const docRef = doc(db, "announcements", id);
+  const docRef = doc(db, 'announcements', id);
   await deleteDoc(docRef);
 }
