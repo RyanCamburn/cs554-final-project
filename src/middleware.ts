@@ -6,6 +6,7 @@ import {
 } from "next-firebase-auth-edge";
 import { clientConfig, serverConfig } from "./auth-config";
 
+// Credit: Next-Firebase-Edge-Auth Minimal Starter Example
 const PUBLIC_PATHS = ["/register", "/login"];
 
 export async function middleware(request: NextRequest) {

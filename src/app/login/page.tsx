@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { isEmail, useForm } from "@mantine/form";
+import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 import { TextInput, Group, Button, PasswordInput } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase";
+import { auth } from "../../firebase"; // FIXME: Get rid of relative imports
 
 interface LoginFormValues {
   email: string;
@@ -23,6 +23,7 @@ export default function Login() {
     },
     validate: {
       email: isEmail("Invalid email"),
+      password: isNotEmpty("Password is required"),
     },
   });
 
@@ -53,7 +54,6 @@ export default function Login() {
   return (
     <form onSubmit={loginForm.onSubmit((values) => handleSubmit(values))}>
       <TextInput
-        withAsterisk
         label="Email"
         placeholder="knguyen@gmail.com"
         {...loginForm.getInputProps("email")}
@@ -66,14 +66,7 @@ export default function Login() {
       <Group mt="md">
         <Button type="submit">Submit</Button>
       </Group>
-      {error && (
-        <div
-          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-          role="alert"
-        >
-          <span className="block sm:inline">{error}</span>
-        </div>
-      )}
+      {error && <div>{error}</div>}
     </form>
   );
 }
