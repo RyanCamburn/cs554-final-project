@@ -54,6 +54,7 @@ export default function Home() {
           </a>
           <Button>Mantine</Button>
           <LogoutButton />
+          {/* AnnouncementActions is for Testing the data functions */}
           <AnnouncementActions />
         </div>
       </main>
