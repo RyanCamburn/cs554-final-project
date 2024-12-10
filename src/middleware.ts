@@ -8,6 +8,7 @@ import { clientConfig, serverConfig } from "./auth-config";
 
 // Credit: Next-Firebase-Edge-Auth Minimal Starter Example
 const PUBLIC_PATHS = ["/register", "/login"];
+const AUTH_ENABLED = process.env.NEXT_PUBLIC_AUTH_ENABLED === "true";
 
 export async function middleware(request: NextRequest) {
   return authMiddleware(request, {
@@ -19,6 +20,11 @@ export async function middleware(request: NextRequest) {
     cookieSerializeOptions: serverConfig.cookieSerializeOptions,
     serviceAccount: serverConfig.serviceAccount,
     handleValidToken: async ({ token, decodedToken, customToken }, headers) => {
+      // TODO: IN PRODUCTION THIS SHOULD BE REMOVED
+      if (!AUTH_ENABLED) {
+        return NextResponse.next();
+      }
+
       // Authenticated user should not be able to access /login, /register and /reset-password routes
       if (PUBLIC_PATHS.includes(request.nextUrl.pathname)) {
         return redirectToHome(request);
@@ -32,6 +38,11 @@ export async function middleware(request: NextRequest) {
     },
     handleInvalidToken: async (reason) => {
       console.info("Missing or malformed credentials", { reason });
+
+      // TODO: IN PRODUCTION THIS SHOULD BE REMOVED
+      if (!AUTH_ENABLED) {
+        return NextResponse.next();
+      }
 
       return redirectToLogin(request, {
         path: "/login",
