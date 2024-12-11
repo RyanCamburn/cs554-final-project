@@ -5,16 +5,16 @@ export const serverConfig = {
     process.env.NEXT_PUBLIC_AUTH_COOKIE_SIGNATURE_KEY_PREVIOUS!,
   ],
   cookieSerializeOptions: {
-    path: "/",
+    path: '/',
     httpOnly: true,
-    secure: process.env.NEXT_PUBLIC_USE_SECURE_COOKIES === "true",
-    sameSite: "lax" as const,
+    secure: process.env.NEXT_PUBLIC_USE_SECURE_COOKIES === 'true',
+    sameSite: 'lax' as const,
     maxAge: 12 * 60 * 60 * 24,
   },
   serviceAccount: {
     projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
     clientEmail: process.env.NEXT_PUBLIC_CLIENT_EMAIL!,
-    privateKey: process.env.NEXT_PUBLIC_PRIVATE_KEY?.replace(/\\n/g, "\n")!,
+    privateKey: process.env.NEXT_PUBLIC_PRIVATE_KEY?.replace(/\\n/g, '\n')!,
   },
 };
 

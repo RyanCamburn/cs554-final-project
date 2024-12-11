@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { isEmail, isNotEmpty, matchesField, useForm } from "@mantine/form";
-import { Anchor, TextInput, Group, Button, PasswordInput } from "@mantine/core";
-import { useRouter } from "next/navigation";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase"; // FIXME: Get rid of relative imports
+import { useState } from 'react';
+import { isEmail, isNotEmpty, matchesField, useForm } from '@mantine/form';
+import { Anchor, TextInput, Group, Button, PasswordInput } from '@mantine/core';
+import { useRouter } from 'next/navigation';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/firebase';
 
 interface RegisterFormValues {
   email: string;
@@ -14,28 +14,28 @@ interface RegisterFormValues {
 }
 
 export default function Register() {
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const router = useRouter();
 
-  const registrationForm = useForm({
+  const registrationForm = useForm<RegisterFormValues>({
     initialValues: {
-      email: "",
-      password: "",
-      confirmation: "",
+      email: '',
+      password: '',
+      confirmation: '',
     },
     validate: {
-      email: isEmail("Invalid email"),
-      password: isNotEmpty("Password is required"), // TODO: Add regex for passsword criteria
-      confirmation: matchesField("password", "Passwords don't match"),
+      email: isEmail('Invalid email'),
+      password: isNotEmpty('Password is required'), // TODO: Add regex for passsword criteria
+      confirmation: matchesField('password', "Passwords don't match"),
     },
   });
 
   async function handleRegistration(values: RegisterFormValues) {
-    setError("");
+    setError('');
     try {
       const { email, password } = values;
       await createUserWithEmailAndPassword(auth, email, password);
-      router.push("/login");
+      router.push('/login');
     } catch (e) {
       setError((e as Error).message);
     }
@@ -48,7 +48,7 @@ export default function Register() {
         <form
           className="mt-6"
           onSubmit={registrationForm.onSubmit((values) =>
-            handleRegistration(values)
+            handleRegistration(values),
           )}
         >
           <div className="mb-4">
@@ -56,11 +56,11 @@ export default function Register() {
               withAsterisk
               label="Email"
               placeholder="jsmith@gmail.com"
-              {...registrationForm.getInputProps("email")}
+              {...registrationForm.getInputProps('email')}
               classNames={{
                 input:
-                  "border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500",
-                label: "text-gray-400 font-medium mb-2",
+                  'border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500',
+                label: 'text-gray-400 font-medium mb-2',
               }}
             />
           </div>
@@ -69,11 +69,11 @@ export default function Register() {
               withAsterisk
               label="Password"
               placeholder="********"
-              {...registrationForm.getInputProps("password")}
+              {...registrationForm.getInputProps('password')}
               classNames={{
                 input:
-                  "border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500",
-                label: "text-gray-400 font-medium mb-2",
+                  'border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500',
+                label: 'text-gray-400 font-medium mb-2',
               }}
             />
           </div>
@@ -82,11 +82,11 @@ export default function Register() {
               withAsterisk
               label="Confirm Password"
               placeholder="********"
-              {...registrationForm.getInputProps("confirmation")}
+              {...registrationForm.getInputProps('confirmation')}
               classNames={{
                 input:
-                  "border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500",
-                label: "text-gray-400 font-medium mb-2",
+                  'border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500',
+                label: 'text-gray-400 font-medium mb-2',
               }}
             />
           </div>

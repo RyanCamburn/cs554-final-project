@@ -6,16 +6,16 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: rgb(17 24 39 / var(--tw-bg-opacity, 1));
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* @media (prefers-color-scheme: dark) {
+	:root {
+		--background: #0a0a0a;
+		--foreground: #ededed;
+	}
+} */
 
 body {
   color: var(--foreground);
