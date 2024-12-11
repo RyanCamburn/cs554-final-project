@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../../firebase';
+import { getAllAnnouncements } from '../../../data/annoucementData';
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,11 +10,7 @@ export default async function handler(
   }
 
   try {
-    const snapshot = await getDocs(collection(db, 'announcements'));
-    const announcements = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const announcements = await getAllAnnouncements();
     res.status(200).json(announcements);
   } catch (error) {
     console.error(error);

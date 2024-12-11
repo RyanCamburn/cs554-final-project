@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { doc, updateDoc, Timestamp } from 'firebase/firestore';
-import { db } from '../../../firebase';
+import { updateAnnouncement } from '../../../data/annoucementData';
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,8 +16,7 @@ export default async function handler(
   }
 
   try {
-    const docRef = doc(db, 'announcements', id);
-    await updateDoc(docRef, { ...updatedFields, updatedAt: Timestamp.now() });
+    await updateAnnouncement(id, updatedFields);
     res.status(200).json({ message: 'Announcement updated successfully' });
   } catch (error) {
     console.error(error);
