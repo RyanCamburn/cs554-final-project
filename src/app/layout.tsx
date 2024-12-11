@@ -4,9 +4,9 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import './globals.css';
 import { ColorSchemeScript, MantineProvider } from '@mantine/core';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import ProtectedLayout from '@/components/ProtectedLayout';
 import { Notifications } from '@mantine/notifications';
+import '@mantine/notifications/styles.css';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -39,9 +39,7 @@ export default function RootLayout({
       >
         <MantineProvider>
           <Notifications />
-          <Navbar />
-          <div className="pt-20">{children}</div>
-          <Footer />
+          <ProtectedLayout>{children}</ProtectedLayout>
         </MantineProvider>
       </body>
     </html>
