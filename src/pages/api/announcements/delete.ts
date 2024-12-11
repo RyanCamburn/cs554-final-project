@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { doc, deleteDoc } from "firebase/firestore";
-import { db } from "../../../firebase";
+import { deleteAnnouncement } from "../../../data/annoucementData";
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,8 +16,7 @@ export default async function handler(
   }
 
   try {
-    const docRef = doc(db, "announcements", id);
-    await deleteDoc(docRef);
+    await deleteAnnouncement(id);
     res.status(200).json({ message: "Announcement deleted successfully" });
   } catch (error) {
     console.error(error);
