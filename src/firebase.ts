@@ -1,25 +1,26 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { clientConfig } from "./auth-config";
 
-const app = initializeApp(clientConfig);
-const auth = getAuth(app);
+let app;
+let auth;
+let db;
 
-if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
-  connectAuthEmulator(auth, 'http://localhost:9099');
-}
+// This style prevents the firestore services from being initialized mutliple times with the emulators
+if (!getApps().length) {
+  app = initializeApp(clientConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
 
-const db = getFirestore(app);
-
-if (process.env.NEXT_PUBLIC_NODE_ENV === "development") {
-  connectAuthEmulator(auth, "http://localhost:9099");
-}
-
-const db = getFirestore(app);
-
-if (process.env.NEXT_PUBLIC_NODE_ENV === "development") {
-  connectFirestoreEmulator(db, "localhost", 8080);
+  if (process.env.NEXT_PUBLIC_NODE_ENV === "development") {
+    connectAuthEmulator(auth, "http://localhost:9099");
+    connectFirestoreEmulator(db, "localhost", 8080);
+  }
+} else {
+  app = getApp();
+  auth = getAuth(app);
+  db = getFirestore(app);
 }
 
 export { app, auth, db };
