@@ -1,10 +1,10 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { connectAuthEmulator, getAuth } from 'firebase/auth';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
-import { clientConfig } from './auth-config';
-import type { FirebaseApp } from 'firebase/app';
-import type { Auth } from 'firebase/auth';
-import type { Firestore } from 'firebase/firestore';
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
+import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
+import { clientConfig } from "./auth-config";
+import type { FirebaseApp } from "firebase/app";
+import type { Auth } from "firebase/auth";
+import type { Firestore } from "firebase/firestore";
 
 let app: FirebaseApp;
 let auth: Auth;
@@ -16,9 +16,9 @@ if (!getApps().length) {
   auth = getAuth(app);
   db = getFirestore(app);
 
-  if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
-    connectAuthEmulator(auth, 'http://localhost:9099');
-    connectFirestoreEmulator(db, 'localhost', 8080);
+  if (process.env.NEXT_PUBLIC_NODE_ENV === "development") {
+    connectAuthEmulator(auth, "http://localhost:9099");
+    connectFirestoreEmulator(db, "localhost", 8080);
   }
 } else {
   app = getApp();
