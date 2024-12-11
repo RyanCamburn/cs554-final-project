@@ -1,20 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { addDoc, collection, Timestamp } from 'firebase/firestore';
-import { db } from '../../../firebase';
+import { createAnnouncement } from '@/data/annoucementData';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
+  res: NextApiResponse,
 ) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const { type, message, scheduleDate, expirationDate, active } = req.body;
-
-  // Validate required fields
-  if (!message || message.trim() === '') {
-    return res.status(400).json({ error: 'Message must not be empty' });
   }
 
   try {
@@ -35,6 +28,7 @@ export default async function handler(
     res.status(201).json({ id: docRef.id });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ error: 'Failed to create announcement' });
     res.status(500).json({ error: 'Failed to create announcement' });
   }
 }
