@@ -1,20 +1,20 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse, NextRequest } from 'next/server';
 import {
   authMiddleware,
   redirectToHome,
   redirectToLogin,
-} from "next-firebase-auth-edge";
-import { clientConfig, serverConfig } from "./auth-config";
+} from 'next-firebase-auth-edge';
+import { clientConfig, serverConfig } from './auth-config';
 
 // Credit: Next-Firebase-Edge-Auth Minimal Starter Example
-const PUBLIC_PATHS = ["/register", "/login"];
-const AUTH_ENABLED = process.env.NEXT_PUBLIC_AUTH_ENABLED === "true";
+const PUBLIC_PATHS = ['/register', '/login'];
+const AUTH_ENABLED = process.env.NEXT_PUBLIC_AUTH_ENABLED === 'true';
 
 // TODO: Credit the library, what is allowed?
 export async function middleware(request: NextRequest) {
   return authMiddleware(request, {
-    loginPath: "/api/login",
-    logoutPath: "/api/logout",
+    loginPath: '/api/login',
+    logoutPath: '/api/logout',
     apiKey: clientConfig.apiKey,
     cookieName: serverConfig.cookieName,
     cookieSignatureKeys: serverConfig.cookieSignatureKeys,
@@ -38,7 +38,7 @@ export async function middleware(request: NextRequest) {
       });
     },
     handleInvalidToken: async (reason) => {
-      console.info("Missing or malformed credentials", { reason });
+      console.info('Missing or malformed credentials', { reason });
 
       // TODO: IN PRODUCTION THIS SHOULD BE REMOVED
       if (!AUTH_ENABLED) {
@@ -46,15 +46,15 @@ export async function middleware(request: NextRequest) {
       }
 
       return redirectToLogin(request, {
-        path: "/login",
+        path: '/login',
         publicPaths: PUBLIC_PATHS,
       });
     },
     handleError: async (error) => {
-      console.error("Unhandled authentication error", { error });
+      console.error('Unhandled authentication error', { error });
 
       return redirectToLogin(request, {
-        path: "/login",
+        path: '/login',
         publicPaths: PUBLIC_PATHS,
       });
     },
@@ -62,5 +62,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/((?!_next|api|.*\\.).*)", "/api/login", "/api/logout"],
+  matcher: ['/', '/((?!_next|api|.*\\.).*)', '/api/login', '/api/logout'],
 };
