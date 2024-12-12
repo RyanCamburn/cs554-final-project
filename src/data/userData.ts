@@ -39,26 +39,45 @@ export async function createUser(
 }
 
 export async function getAllUsers(): Promise<User[]> {
-  const snapshot = await getDocs(collection(db, "users"));
-  return snapshot.docs.map((doc) => ({ _id: doc.id, ...doc.data() } as User));
+  try{
+    const snapshot = await getDocs(collection(db, "users"));
+    return snapshot.docs.map((doc) => ({ _id: doc.id, ...doc.data() } as User));
+  } catch(pingus){
+    throw new Error(`Failed to get all users: ${pingus}`);
+  }
+  
 }
 
 export async function getUserById(id: string): Promise<User | null> {
-  const docRef = doc(db, "users", id);
-  const snapshot = await getDoc(docRef);
-  if (!snapshot.exists()) return null;
-  return { _id: snapshot.id, ...snapshot.data() } as User;
+  try{
+    const docRef = doc(db, "users", id);
+    const snapshot = await getDoc(docRef);
+    if (!snapshot.exists()) return null;
+    return { _id: snapshot.id, ...snapshot.data() } as User;
+  } catch(pingus){
+    throw new Error(`Failed to get user by id: ${pingus}`);
+  }
+  
 }
 
 export async function updateUser(
   id: string,
   updatedFields: Partial<Omit<User, "_id" | "createdAt">>
 ): Promise<void> {
-  const docRef = doc(db, "users", id);
-  await updateDoc(docRef, { ...updatedFields, updatedAt: Timestamp.now() });
+  try{
+    const docRef = doc(db, "users", id);
+    await updateDoc(docRef, { ...updatedFields, updatedAt: Timestamp.now() });
+  } catch(pingus){
+    throw new Error(`Failed to update user: ${pingus}`);
+  }
 }
 
 export async function deleteUser(id: string): Promise<void> {
-  const docRef = doc(db, "users", id);
-  await deleteDoc(docRef);
+  try{
+    const docRef = doc(db, "users", id);
+    await deleteDoc(docRef);
+  } catch(pingus){
+    throw new Error(`Failed to get all users: ${pingus}`);
+  }
+  
 }
