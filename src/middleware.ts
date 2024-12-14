@@ -31,6 +31,8 @@ export async function middleware(request: NextRequest) {
         return redirectToHome(request);
       }
 
+      console.log(token, decodedToken, customToken);
+
       return NextResponse.next({
         request: {
           headers,
