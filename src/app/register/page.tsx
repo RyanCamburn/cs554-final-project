@@ -55,14 +55,12 @@ export default function Register() {
   });
 
   async function handleRegistration(values: RegisterFormValues) {
-    console.log('REGISTERING');
     setError('');
     try {
       const { firstName, lastName, email, gender, role, password } = values;
       await intakeUser({ firstName, lastName, email, gender, role, password });
       router.push('/login');
     } catch (e) {
-      console.log(e);
       setError((e as Error).message);
     }
   }
@@ -73,10 +71,9 @@ export default function Register() {
         <h2 className="text-2xl font-bold text-center text-white">Register</h2>
         <form
           className="mt-6"
-          onSubmit={registrationForm.onSubmit((values) => {
-            console.log('Submit');
-            handleRegistration(values);
-          })}
+          onSubmit={registrationForm.onSubmit((values) =>
+            handleRegistration(values),
+          )}
         >
           <div className="mb-4">
             <TextInput
