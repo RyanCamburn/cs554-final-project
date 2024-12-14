@@ -7,6 +7,7 @@ import {
   getDocs,
   updateDoc,
   deleteDoc,
+  setDoc,
 } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -35,6 +36,18 @@ export async function createUser(
 
   const docRef = await addDoc(collection(db, 'users'), newUser);
   return docRef.id;
+}
+
+export async function createUserWithUid(
+  user: Omit<User, '_id' | 'createdAt' | 'updatedAt'>,
+  uid: string,
+): Promise<void> {
+  const docRef = await setDoc(doc(db, 'users', uid), {
+    ...user,
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
+  });
+  return docRef;
 }
 
 export async function getAllUsers(): Promise<User[]> {
