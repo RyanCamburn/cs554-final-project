@@ -5,10 +5,15 @@ import { isEmail, isNotEmpty, matchesField, useForm } from '@mantine/form';
 import { Anchor, TextInput, Group, Button, PasswordInput } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+// import { intakeUser } from './actions';
 import { auth } from '@/firebase';
 
 interface RegisterFormValues {
+  firstName: string;
+  lastName: string;
   email: string;
+  gender: string;
+  role: string;
   password: string;
   confirmation: string;
 }
@@ -19,7 +24,11 @@ export default function Register() {
 
   const registrationForm = useForm<RegisterFormValues>({
     initialValues: {
+      firstName: '',
+      lastName: '',
       email: '',
+      gender: '',
+      role: '',
       password: '',
       confirmation: '',
     },
