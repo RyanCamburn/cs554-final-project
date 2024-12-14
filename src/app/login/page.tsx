@@ -70,9 +70,8 @@ export default function Login() {
               placeholder="knguyen@gmail.com"
               {...loginForm.getInputProps('email')}
               classNames={{
-                input:
-                  'border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500',
-                label: 'text-gray-400 font-medium mb-2',
+                input: 'custom-form-input',
+                label: 'custom-form-label',
               }}
             />
           </div>
@@ -83,9 +82,8 @@ export default function Login() {
               placeholder="password"
               {...loginForm.getInputProps('password')}
               classNames={{
-                input:
-                  'border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500',
-                label: 'text-gray-400 font-medium mb-2',
+                input: 'custom-form-input',
+                label: 'custom-form-label',
               }}
             />
           </div>

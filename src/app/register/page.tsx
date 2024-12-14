@@ -63,13 +63,24 @@ export default function Register() {
           <div className="mb-4">
             <TextInput
               withAsterisk
+              label="First Name"
+              placeholder="John"
+              {...registrationForm.getInputProps('firstName')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <TextInput
+              withAsterisk
               label="Email"
               placeholder="jsmith@gmail.com"
               {...registrationForm.getInputProps('email')}
               classNames={{
-                input:
-                  'border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500',
-                label: 'text-gray-400 font-medium mb-2',
+                input: 'custom-form-input',
+                label: 'custom-form-label',
               }}
             />
           </div>
@@ -80,9 +91,8 @@ export default function Register() {
               placeholder="********"
               {...registrationForm.getInputProps('password')}
               classNames={{
-                input:
-                  'border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500',
-                label: 'text-gray-400 font-medium mb-2',
+                input: 'custom-form-input',
+                label: 'custom-form-label',
               }}
             />
           </div>
@@ -93,9 +103,8 @@ export default function Register() {
               placeholder="********"
               {...registrationForm.getInputProps('confirmation')}
               classNames={{
-                input:
-                  'border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500',
-                label: 'text-gray-400 font-medium mb-2',
+                input: 'custom-form-input',
+                label: 'custom-form-label',
               }}
             />
           </div>
