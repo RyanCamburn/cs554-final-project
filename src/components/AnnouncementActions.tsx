@@ -33,7 +33,7 @@ const AnnouncementActions: React.FC = () => {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: 'gL3XPibWhK3Cpp0MzHt5', // Replace with actual document ID
+        id: 'qG8p0aMLffoRIzIf7hAT', // Replace with actual document ID
         message: 'Updated announcement',
       }),
     });
@@ -46,7 +46,7 @@ const AnnouncementActions: React.FC = () => {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: 'gL3XPibWhK3Cpp0MzHt5', // Replace with actual document ID
+        id: 'qG8p0aMLffoRIzIf7hAT', // Replace with actual document ID
       }),
     });
     const data = await response.json();
