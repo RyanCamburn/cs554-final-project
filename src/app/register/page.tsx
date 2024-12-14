@@ -1,7 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { isEmail, isNotEmpty, matchesField, useForm } from '@mantine/form';
+import {
+  isEmail,
+  isNotEmpty,
+  matchesField,
+  useForm,
+  UseFormReturnType,
+} from '@mantine/form';
 import {
   Anchor,
   TextInput,
@@ -11,9 +17,7 @@ import {
   Select,
 } from '@mantine/core';
 import { useRouter } from 'next/navigation';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-// import { intakeUser } from './actions';
-import { auth } from '@/firebase';
+import { intakeUser } from './actions';
 
 interface RegisterFormValues {
   firstName: string;
@@ -29,7 +33,7 @@ export default function Register() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const registrationForm = useForm<RegisterFormValues>({
+  const registrationForm: UseFormReturnType<RegisterFormValues> = useForm({
     initialValues: {
       firstName: '',
       lastName: '',
@@ -51,12 +55,14 @@ export default function Register() {
   });
 
   async function handleRegistration(values: RegisterFormValues) {
+    console.log('REGISTERING');
     setError('');
     try {
-      const { email, password } = values;
-      await createUserWithEmailAndPassword(auth, email, password);
+      const { firstName, lastName, email, gender, role, password } = values;
+      await intakeUser({ firstName, lastName, email, gender, role, password });
       router.push('/login');
     } catch (e) {
+      console.log(e);
       setError((e as Error).message);
     }
   }
@@ -67,9 +73,10 @@ export default function Register() {
         <h2 className="text-2xl font-bold text-center text-white">Register</h2>
         <form
           className="mt-6"
-          onSubmit={registrationForm.onSubmit((values) =>
-            handleRegistration(values),
-          )}
+          onSubmit={registrationForm.onSubmit((values) => {
+            console.log('Submit');
+            handleRegistration(values);
+          })}
         >
           <div className="mb-4">
             <TextInput
@@ -105,7 +112,7 @@ export default function Register() {
                 { value: 'female', label: 'Female' },
                 { value: 'non-binary', label: 'Non-binary' },
               ]}
-              {...registrationForm.getInputProps('role')}
+              {...registrationForm.getInputProps('gender')}
               classNames={{
                 input: 'custom-form-input',
                 label: 'custom-form-label',

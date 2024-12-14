@@ -11,7 +11,6 @@ interface UserRegisterFormValues {
   gender: string;
   role: string;
   password: string;
-  confirmation: string;
 }
 
 // This function is called intakeUser to avoid conflict with the createUser data function
@@ -34,18 +33,19 @@ export async function intakeUser(user: UserRegisterFormValues): Promise<void> {
     // 2. Create a user document in firestore with the same uid
     // const uid = authUserObject.user.uid;
     // TODO: Should this just be a server action
-    const createUserReponse = await fetch('/api/users/create', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        role,
-        firstName,
-        lastName,
-        email,
-        gender,
-      }),
-    });
-    const userData = await createUserReponse.json();
+    // const createUserReponse = await fetch('/api/users/create', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({
+    //     role,
+    //     firstName,
+    //     lastName,
+    //     email,
+    //     gender,
+    //   }),
+    // });
+    // const userData = await createUserReponse.json();
+    console.log('User created:', authUserObject);
   } catch (e) {
     throw new Error((e as Error).message); // Pass error message to client caller
   }
