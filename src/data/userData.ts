@@ -19,7 +19,6 @@ interface User {
   phoneNumber?: string;
   gender: string;
   industry?: string;
-  permissions: string;
   assignees?: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
