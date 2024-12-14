@@ -10,6 +10,7 @@ import { clientConfig, serverConfig } from "./auth-config";
 const PUBLIC_PATHS = ["/register", "/login"];
 const AUTH_ENABLED = process.env.NEXT_PUBLIC_AUTH_ENABLED === "true";
 
+// TODO: Credit the library, what is allowed?
 export async function middleware(request: NextRequest) {
   return authMiddleware(request, {
     loginPath: "/api/login",
