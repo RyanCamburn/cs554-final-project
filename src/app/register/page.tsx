@@ -2,7 +2,14 @@
 
 import { useState } from 'react';
 import { isEmail, isNotEmpty, matchesField, useForm } from '@mantine/form';
-import { Anchor, TextInput, Group, Button, PasswordInput } from '@mantine/core';
+import {
+  Anchor,
+  TextInput,
+  Group,
+  Button,
+  PasswordInput,
+  Select,
+} from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 // import { intakeUser } from './actions';
@@ -33,7 +40,11 @@ export default function Register() {
       confirmation: '',
     },
     validate: {
+      firstName: isNotEmpty('First Name is required'),
+      lastName: isNotEmpty('Last Name is required'),
       email: isEmail('Invalid email'),
+      gender: isNotEmpty('Gender is required'),
+      role: isNotEmpty('Role is required'),
       password: isNotEmpty('Password is required'), // TODO: Add regex for passsword criteria
       confirmation: matchesField('password', "Passwords don't match"),
     },
@@ -66,6 +77,51 @@ export default function Register() {
               label="First Name"
               placeholder="John"
               {...registrationForm.getInputProps('firstName')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <TextInput
+              withAsterisk
+              label="Last Name"
+              placeholder="Smith"
+              {...registrationForm.getInputProps('lastName')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <Select
+              withAsterisk
+              label="Gender"
+              placeholder="Male"
+              data={[
+                { value: 'male', label: 'Male' },
+                { value: 'female', label: 'Female' },
+                { value: 'non-binary', label: 'Non-binary' },
+              ]}
+              {...registrationForm.getInputProps('role')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <Select
+              withAsterisk
+              label="Role"
+              placeholder="Mentor"
+              data={[
+                { value: 'mentor', label: 'Mentor' },
+                { value: 'mentee', label: 'Mentee' },
+              ]}
+              {...registrationForm.getInputProps('role')}
               classNames={{
                 input: 'custom-form-input',
                 label: 'custom-form-label',
