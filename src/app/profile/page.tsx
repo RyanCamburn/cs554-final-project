@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useAuth } from "../sessions/AuthContext";
+import { useAuth } from '../sessions/AuthContext';
 
 export default function Profile() {
   const user = useAuth();

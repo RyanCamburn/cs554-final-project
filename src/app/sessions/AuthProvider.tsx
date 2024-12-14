@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { AuthContext, User } from "./AuthContext";
+import * as React from 'react';
+import { AuthContext, User } from './AuthContext';
 
 export interface AuthProviderProps {
   user: User | null;

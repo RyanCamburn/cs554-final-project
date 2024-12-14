@@ -1,13 +1,13 @@
-"use server";
+'use server';
 
-import { refreshCookiesWithIdToken } from "next-firebase-auth-edge/lib/next/cookies";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { cookies, headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { refreshCookiesWithIdToken } from 'next-firebase-auth-edge/lib/next/cookies';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { cookies, headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 // See starter example for implementation: https://github.com/awinogrodzki/next-firebase-auth-edge/tree/main/examples/next-typescript-starter
-import { getFirebaseAuth } from "@/app/auth/firebase";
-import { authConfig } from "@/config/server-config";
+import { getFirebaseAuth } from '@/app/auth/firebase';
+import { authConfig } from '@/config/server-config';
 
 export async function logoutAction() {
   // TODO:
@@ -17,7 +17,7 @@ export async function logoutAction() {
 export async function registerAction(
   username: string,
   password: string,
-  role: string
+  role: string,
 ) {
   // TODO:
 }
@@ -26,7 +26,7 @@ export async function loginAction(username: string, password: string) {
   const credential = await signInWithEmailAndPassword(
     getFirebaseAuth(),
     username,
-    password
+    password,
   );
 
   const idToken = await credential.user.getIdToken();
@@ -36,7 +36,7 @@ export async function loginAction(username: string, password: string) {
     idToken,
     await headers(),
     await cookies(),
-    authConfig
+    authConfig,
   );
-  redirect("/");
+  redirect('/');
 }
