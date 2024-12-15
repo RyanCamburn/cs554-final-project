@@ -10,7 +10,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase';
 
-interface User {
+export interface User {
   _id?: string;
   role: string;
   firstName: string;
@@ -19,7 +19,7 @@ interface User {
   phoneNumber?: string;
   gender: string;
   industry?: string;
-  permissions: string;
+  permissions?: string;
   assignees?: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
