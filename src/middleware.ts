@@ -10,6 +10,8 @@ import { clientConfig, serverConfig } from './auth-config';
 const PUBLIC_PATHS = ['/register', '/login'];
 const AUTH_ENABLED = process.env.NEXT_PUBLIC_AUTH_ENABLED === 'true';
 
+// For middleware, do not use the session information
+// Session information is used for server-side authentication
 export async function middleware(request: NextRequest) {
   return authMiddleware(request, {
     loginPath: '/api/login',
@@ -19,14 +21,22 @@ export async function middleware(request: NextRequest) {
     cookieSignatureKeys: serverConfig.cookieSignatureKeys,
     cookieSerializeOptions: serverConfig.cookieSerializeOptions,
     serviceAccount: serverConfig.serviceAccount,
-    handleValidToken: async ({ token, decodedToken, customToken }, headers) => {
+    handleValidToken: async ({ decodedToken }, headers) => {
       // TODO: IN PRODUCTION THIS SHOULD BE REMOVED
       if (!AUTH_ENABLED) {
         return NextResponse.next();
       }
 
-      // Authenticated user should not be able to access /login, /register and /reset-password routes
+      // Authenticated user should not be able to access /login, /register routes until they logout
       if (PUBLIC_PATHS.includes(request.nextUrl.pathname)) {
+        return redirectToHome(request);
+      }
+
+      // Only admins should be able to access /admin route
+      if (
+        request.nextUrl.pathname.startsWith('/admin') &&
+        decodedToken.role !== 'admin'
+      ) {
         return redirectToHome(request);
       }
 
@@ -50,6 +60,11 @@ export async function middleware(request: NextRequest) {
       });
     },
     handleError: async (error) => {
+      // TODO: IN PRODUCTION THIS SHOULD BE REMOVED
+      if (!AUTH_ENABLED) {
+        return NextResponse.next();
+      }
+
       console.error('Unhandled authentication error', { error });
 
       return redirectToLogin(request, {

@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { isEmail, isNotEmpty, useForm } from '@mantine/form';
 import { Anchor, TextInput, Group, Button, PasswordInput } from '@mantine/core';
 import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/firebase';
+import { loginUser } from './login';
 
 interface LoginFormValues {
   email: string;
@@ -31,20 +30,7 @@ export default function Login() {
     setError('');
     try {
       const { email, password } = values;
-      const credential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      );
-
-      const idToken = await credential.user.getIdToken();
-
-      await fetch('/api/login', {
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      });
-
+      await loginUser(email, password);
       router.push('/');
     } catch (e) {
       setError((e as Error).message);
@@ -66,9 +52,8 @@ export default function Login() {
               placeholder="knguyen@gmail.com"
               {...loginForm.getInputProps('email')}
               classNames={{
-                input:
-                  'border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500',
-                label: 'text-gray-400 font-medium mb-2',
+                input: 'custom-form-input',
+                label: 'custom-form-label',
               }}
             />
           </div>
@@ -79,9 +64,8 @@ export default function Login() {
               placeholder="password"
               {...loginForm.getInputProps('password')}
               classNames={{
-                input:
-                  'border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500',
-                label: 'text-gray-400 font-medium mb-2',
+                input: 'custom-form-input',
+                label: 'custom-form-label',
               }}
             />
           </div>

@@ -7,6 +7,7 @@ import {
   getDocs,
   updateDoc,
   deleteDoc,
+  setDoc,
 } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -19,7 +20,6 @@ interface User {
   phoneNumber?: string;
   gender: string;
   industry?: string;
-  permissions: string;
   assignees?: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
@@ -36,6 +36,19 @@ export async function createUser(
 
   const docRef = await addDoc(collection(db, 'users'), newUser);
   return docRef.id;
+}
+
+// This function is called in the registration process to create a user in firestore with the same uid as the user in firebase auth
+export async function createUserWithUid(
+  user: Omit<User, '_id' | 'createdAt' | 'updatedAt'>,
+  uid: string,
+): Promise<void> {
+  const docRef = await setDoc(doc(db, 'users', uid), {
+    ...user,
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
+  });
+  return docRef;
 }
 
 export async function getAllUsers(): Promise<User[]> {
