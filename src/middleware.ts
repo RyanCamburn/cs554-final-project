@@ -5,13 +5,11 @@ import {
   redirectToLogin,
 } from 'next-firebase-auth-edge';
 import { clientConfig, serverConfig } from './auth-config';
-import { get } from 'http';
 
 // Credit: Next-Firebase-Edge-Auth Minimal Starter Example
 const PUBLIC_PATHS = ['/register', '/login'];
 const AUTH_ENABLED = process.env.NEXT_PUBLIC_AUTH_ENABLED === 'true';
 
-// TODO: Credit the library, what is allowed?
 export async function middleware(request: NextRequest) {
   return authMiddleware(request, {
     loginPath: '/api/login',
@@ -27,12 +25,18 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
       }
 
-      // Authenticated user should not be able to access /login, /register and /reset-password routes
+      // Authenticated user should not be able to access /login, /register routes until they logout
       if (PUBLIC_PATHS.includes(request.nextUrl.pathname)) {
         return redirectToHome(request);
       }
 
-      console.log(token, decodedToken, customToken);
+      // Only admins should be able to access /admin route
+      if (
+        request.nextUrl.pathname.startsWith('/admin') &&
+        decodedToken.role !== 'admin'
+      ) {
+        return redirectToHome(request);
+      }
 
       return NextResponse.next({
         request: {
@@ -54,6 +58,7 @@ export async function middleware(request: NextRequest) {
       });
     },
     handleError: async (error) => {
+      // TODO: IN PRODUCTION THIS SHOULD BE REMOVED
       if (!AUTH_ENABLED) {
         return NextResponse.next();
       }
