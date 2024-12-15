@@ -12,7 +12,6 @@ import {
 import { db } from '../firebase';
 
 export interface User {
-export interface User {
   _id?: string;
   role: string;
   firstName: string;
