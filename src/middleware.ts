@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
     cookieSignatureKeys: serverConfig.cookieSignatureKeys,
     cookieSerializeOptions: serverConfig.cookieSerializeOptions,
     serviceAccount: serverConfig.serviceAccount,
-    handleValidToken: async ({ token, decodedToken, customToken }, headers) => {
+    handleValidToken: async ({ decodedToken }, headers) => {
       // TODO: IN PRODUCTION THIS SHOULD BE REMOVED
       if (!AUTH_ENABLED) {
         return NextResponse.next();

@@ -17,7 +17,15 @@ export const AuthContext = createContext<AuthContextValue>({
   user: null,
 });
 
-// TODO: How can we connect this to firestore to get profile information? What should be stored in the session and what should be fetched from the database?
-// FIXME: user object is leaking plaintext password in emulator, is this expected behavior?
-
 export const useAuth = () => useContext(AuthContext);
+
+/** Example Usage in a component:
+ * 'use client'; // IMPORTANT useAuth() can only be called in client components
+ *
+ * import { useAuth } from '@/sessions/AuthContext';
+ * function Example() {
+ *  const { user } = useAuth();
+ *  const role = user?.customClaims.role;
+ *  return <div>{role}</div>;
+ * }
+ */

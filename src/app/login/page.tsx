@@ -11,7 +11,6 @@ interface LoginFormValues {
   password: string;
 }
 
-// TODO: It might be better to handle login with a server action: https://next-firebase-auth-edge-docs.vercel.app/docs/getting-started/login-with-server-action
 export default function Login() {
   const [error, setError] = useState('');
   const router = useRouter();

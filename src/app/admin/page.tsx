@@ -1,7 +1,7 @@
 'use client';
 
 // TODO: Only let admins access this page
-import { useAuth } from '@/app/sessions/AuthContext';
+import { useAuth } from '@/sessions/AuthContext';
 
 export default function AdminPage() {
   const { user } = useAuth();
