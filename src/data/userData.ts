@@ -38,6 +38,7 @@ export async function createUser(
   return docRef.id;
 }
 
+// This function is called in the registration process to create a user in firestore with the same uid as the user in firebase auth
 export async function createUserWithUid(
   user: Omit<User, '_id' | 'createdAt' | 'updatedAt'>,
   uid: string,
