@@ -4,6 +4,7 @@ import { useState } from 'react';
 import {
   isEmail,
   isNotEmpty,
+  matches,
   matchesField,
   useForm,
   UseFormReturnType,
@@ -49,7 +50,10 @@ export default function Register() {
       email: isEmail('Invalid email'),
       gender: isNotEmpty('Gender is required'),
       role: isNotEmpty('Role is required'),
-      password: isNotEmpty('Password is required'), // TODO: Add regex for passsword criteria
+      password: matches(
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+        'Password must be at least 8 characters long and contain 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character',
+      ), // Regex Credit: https://uibakery.io/regex-library/password
       confirmation: matchesField('password', "Passwords don't match"),
     },
   });

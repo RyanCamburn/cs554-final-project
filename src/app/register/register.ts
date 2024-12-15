@@ -13,9 +13,6 @@ interface UserRegisterFormValues {
 }
 
 // This function is called intakeUser to avoid conflict with the createUser Firestore data function
-// FIXME: What if one of these operations fail? How can we rollback the changes?
-// Transactions were also recommended to handle rollbacks: https://firebase.google.com/docs/firestore/manage-data/transactions
-// Potential Fix: https://www.reddit.com/r/Firebase/comments/1173v5g/how_to_create_user_with_firebase_auth_and_a/?rdt=46639
 export async function intakeUser(user: UserRegisterFormValues): Promise<void> {
   try {
     const { firstName, lastName, email, gender, role, password } = user;
@@ -42,6 +39,9 @@ export async function intakeUser(user: UserRegisterFormValues): Promise<void> {
       }),
     });
   } catch (e) {
+    // FIXME: What if one of these operations fail? How can we rollback the changes?
+    // Transactions were also recommended to handle rollbacks: https://firebase.google.com/docs/firestore/manage-data/transactions
+    // Potential Fix: https://www.reddit.com/r/Firebase/comments/1173v5g/how_to_create_user_with_firebase_auth_and_a/?rdt=46639
     throw new Error((e as Error).message); // Pass error message to client caller
   }
 }
