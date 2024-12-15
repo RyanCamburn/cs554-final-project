@@ -1,5 +1,3 @@
-'user server';
-
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { createUserWithUid } from '@/data/userData';
 import { auth } from '@/firebase';
@@ -14,11 +12,7 @@ interface UserRegisterFormValues {
   password: string;
 }
 
-// This function is called intakeUser to avoid conflict with the createUser data function
-// This is because this server action is responsible for multiple things:
-// 1. Create a user in firebase auth
-// 2. Create a user document in firestore with the same uid
-// 3. Set custom claims
+// This function is called intakeUser to avoid conflict with the createUser Firestore data function
 // FIXME: What if one of these operations fail? How can we rollback the changes?
 // Transactions were also recommended to handle rollbacks: https://firebase.google.com/docs/firestore/manage-data/transactions
 // Potential Fix: https://www.reddit.com/r/Firebase/comments/1173v5g/how_to_create_user_with_firebase_auth_and_a/?rdt=46639
@@ -38,9 +32,7 @@ export async function intakeUser(user: UserRegisterFormValues): Promise<void> {
       uid,
     );
     // 3. Set custom claims - this might be OD
-    // FIXME: We can just set one admin account in the .env
-    // Set admin emails in the .env file or in firebase console
-    // TODO: Move claims to a separate API endpoint
+    // Admin roles can be set in the Firebase console of emulators UI by giving them {role: 'admin'} as a custom claim
     const claimsRef = await fetch('/api/admin/claims', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -53,5 +45,3 @@ export async function intakeUser(user: UserRegisterFormValues): Promise<void> {
     throw new Error((e as Error).message); // Pass error message to client caller
   }
 }
-
-// TODO: Make a custom hook to handle authorization of using different server actions

@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { isEmail, isNotEmpty, useForm } from '@mantine/form';
 import { Anchor, TextInput, Group, Button, PasswordInput } from '@mantine/core';
 import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/firebase';
+import { loginUser } from './login';
 
 interface LoginFormValues {
   email: string;
@@ -32,23 +31,7 @@ export default function Login() {
     setError('');
     try {
       const { email, password } = values;
-      const credential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      );
-
-      // TODO: Here the user is logged in, this should be saved to their context
-      console.log(credential);
-
-      const idToken = await credential.user.getIdToken();
-
-      await fetch('/api/login', {
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      });
-
+      await loginUser(email, password);
       router.push('/');
     } catch (e) {
       setError((e as Error).message);

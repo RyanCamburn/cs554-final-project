@@ -17,7 +17,7 @@ import {
   Select,
 } from '@mantine/core';
 import { useRouter } from 'next/navigation';
-import { intakeUser } from './actions';
+import { intakeUser } from './register';
 
 interface RegisterFormValues {
   firstName: string;

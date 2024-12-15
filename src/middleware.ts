@@ -10,6 +10,8 @@ import { clientConfig, serverConfig } from './auth-config';
 const PUBLIC_PATHS = ['/register', '/login'];
 const AUTH_ENABLED = process.env.NEXT_PUBLIC_AUTH_ENABLED === 'true';
 
+// For middleware, do not use the session information
+// Session information is used for server-side authentication
 export async function middleware(request: NextRequest) {
   return authMiddleware(request, {
     loginPath: '/api/login',
