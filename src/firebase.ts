@@ -11,6 +11,7 @@ let auth: Auth;
 let db: Firestore;
 
 // This style prevents the firestore services from being initialized mutliple times with the emulators
+// This initializes all the Client Side Firebase Services
 if (!getApps().length) {
   app = initializeApp(clientConfig);
   auth = getAuth(app);

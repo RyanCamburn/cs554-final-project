@@ -1,9 +1,9 @@
+'use client';
+
 import { Title, Text, Button, Group } from '@mantine/core';
 import Link from 'next/link';
 
 export default function Home() {
-  // TODO: Show user information from the session here
-  // TODO: Write tests?
   return (
     <div className="min-h-screen p-16">
       {/* Hero Section */}

@@ -1,14 +1,31 @@
 'use client';
 
 import { useState } from 'react';
-import { isEmail, isNotEmpty, matchesField, useForm } from '@mantine/form';
-import { Anchor, TextInput, Group, Button, PasswordInput } from '@mantine/core';
+import {
+  isEmail,
+  isNotEmpty,
+  matches,
+  matchesField,
+  useForm,
+  UseFormReturnType,
+} from '@mantine/form';
+import {
+  Anchor,
+  TextInput,
+  Group,
+  Button,
+  PasswordInput,
+  Select,
+} from '@mantine/core';
 import { useRouter } from 'next/navigation';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/firebase';
+import { intakeUser } from './register';
 
 interface RegisterFormValues {
+  firstName: string;
+  lastName: string;
   email: string;
+  gender: string;
+  role: string;
   password: string;
   confirmation: string;
 }
@@ -17,15 +34,26 @@ export default function Register() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const registrationForm = useForm<RegisterFormValues>({
+  const registrationForm: UseFormReturnType<RegisterFormValues> = useForm({
     initialValues: {
+      firstName: '',
+      lastName: '',
       email: '',
+      gender: '',
+      role: '',
       password: '',
       confirmation: '',
     },
     validate: {
+      firstName: isNotEmpty('First Name is required'),
+      lastName: isNotEmpty('Last Name is required'),
       email: isEmail('Invalid email'),
-      password: isNotEmpty('Password is required'), // TODO: Add regex for passsword criteria
+      gender: isNotEmpty('Gender is required'),
+      role: isNotEmpty('Role is required'),
+      password: matches(
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+        'Password must be at least 8 characters long and contain 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character',
+      ), // Regex Credit: https://uibakery.io/regex-library/password
       confirmation: matchesField('password', "Passwords don't match"),
     },
   });
@@ -33,8 +61,8 @@ export default function Register() {
   async function handleRegistration(values: RegisterFormValues) {
     setError('');
     try {
-      const { email, password } = values;
-      await createUserWithEmailAndPassword(auth, email, password);
+      const { firstName, lastName, email, gender, role, password } = values;
+      await intakeUser({ firstName, lastName, email, gender, role, password });
       router.push('/login');
     } catch (e) {
       setError((e as Error).message);
@@ -54,13 +82,69 @@ export default function Register() {
           <div className="mb-4">
             <TextInput
               withAsterisk
+              label="First Name"
+              placeholder="John"
+              {...registrationForm.getInputProps('firstName')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <TextInput
+              withAsterisk
+              label="Last Name"
+              placeholder="Smith"
+              {...registrationForm.getInputProps('lastName')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <Select
+              withAsterisk
+              label="Gender"
+              placeholder="Male"
+              data={[
+                { value: 'male', label: 'Male' },
+                { value: 'female', label: 'Female' },
+                { value: 'non-binary', label: 'Non-binary' },
+              ]}
+              {...registrationForm.getInputProps('gender')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <Select
+              withAsterisk
+              label="Role"
+              placeholder="Mentor"
+              data={[
+                { value: 'mentor', label: 'Mentor' },
+                { value: 'mentee', label: 'Mentee' },
+              ]}
+              {...registrationForm.getInputProps('role')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <TextInput
+              withAsterisk
               label="Email"
               placeholder="jsmith@gmail.com"
               {...registrationForm.getInputProps('email')}
               classNames={{
-                input:
-                  'border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500',
-                label: 'text-gray-400 font-medium mb-2',
+                input: 'custom-form-input',
+                label: 'custom-form-label',
               }}
             />
           </div>
@@ -71,9 +155,8 @@ export default function Register() {
               placeholder="********"
               {...registrationForm.getInputProps('password')}
               classNames={{
-                input:
-                  'border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500',
-                label: 'text-gray-400 font-medium mb-2',
+                input: 'custom-form-input',
+                label: 'custom-form-label',
               }}
             />
           </div>
@@ -84,9 +167,8 @@ export default function Register() {
               placeholder="********"
               {...registrationForm.getInputProps('confirmation')}
               classNames={{
-                input:
-                  'border-gray-700 bg-gray-700 text-gray-300 rounded-md placeholder-gray-500',
-                label: 'text-gray-400 font-medium mb-2',
+                input: 'custom-form-input',
+                label: 'custom-form-label',
               }}
             />
           </div>
