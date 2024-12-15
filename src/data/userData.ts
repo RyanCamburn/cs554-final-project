@@ -11,7 +11,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase';
 
-interface User {
+export interface User {
   _id?: string;
   role: string;
   firstName: string;
