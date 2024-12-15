@@ -12,6 +12,14 @@ import { adminAuth } from '@/firebase-admin';
 const USER_AMOUNT = 100;
 const MS_IN_DAY = 86400000;
 
+const logError = (e: unknown, message: string = '') => {
+  if (e instanceof Error) {
+    console.error(`❌ ${message}`, e.message);
+  } else {
+    console.error(`❌ ${message}`, e);
+  }
+};
+
 // This function is server-side implementation of intakeUser function from register.ts
 const intakeUser = async (user: UserRegisterFormValues) => {
   try {
@@ -61,14 +69,26 @@ const seed = async () => {
     password: 'Admin#01',
   };
 
-  await intakeUser(mentee);
-  console.log(' - Mentee Seeded');
+  try {
+    await intakeUser(mentee);
+    console.log(' - Mentee Seeded');
+  } catch (e) {
+    logError(e);
+  }
 
-  await intakeUser(mentor);
-  console.log(' - Mentor Seeded');
+  try {
+    await intakeUser(mentor);
+    console.log(' - Mentor Seeded');
+  } catch (e) {
+    logError(e);
+  }
 
-  await intakeUser(admin);
-  console.log(' - Admin Seeded');
+  try {
+    await intakeUser(admin);
+    console.log(' - Admin Seeded');
+  } catch (e) {
+    logError(e);
+  }
 
   const announcement: Omit<Announcement, '_id' | 'createdAt' | 'updatedAt'> = {
     type: 'info',
@@ -80,8 +100,12 @@ const seed = async () => {
     active: true,
   };
 
-  await createAnnouncement(announcement);
-  console.log(' - Announcement Seeded');
+  try {
+    await createAnnouncement(announcement);
+    console.log(' - Announcement Seeded');
+  } catch (e) {
+    logError(e);
+  }
 };
 
 // Populate the database with random users
@@ -98,11 +122,7 @@ const populate = async (count: number) => {
     try {
       await intakeUser(user);
     } catch (e) {
-      if (e instanceof Error) {
-        console.log('❌ Error Seeding User:', e.message);
-      } else {
-        console.log('❌ Error Seeding User:', e);
-      }
+      logError(e, `Error seeding user`);
     }
   }
 };
@@ -115,7 +135,7 @@ const main = async () => {
 
   const allUsers = await getAllUsers();
   if (allUsers.length > USER_AMOUNT) {
-    throw new Error('\n🌱 Database already been seeded\n');
+    throw new Error('🌱 Database already been seeded');
   }
 
   console.log('\n⏳ Attempting seed...');
