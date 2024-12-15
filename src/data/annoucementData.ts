@@ -12,7 +12,7 @@ import { db } from '../firebase';
 
 type AnnouncementType = 'info' | 'warning' | 'error';
 
-interface Announcement {
+export interface Announcement {
   _id?: string;
   type: AnnouncementType;
   message: string;
