@@ -62,6 +62,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   // This will be passed into the AuthProvider to allow session management
+  // TODO: Claims should be put into the session as well to manage page access with middleware, the tokens themselves will be used to authenticate with the server
   const tokens = await getTokens(await cookies(), {
     apiKey: process.env.NEXT_PUBLIC_API_KEY!,
     ...serverConfig,

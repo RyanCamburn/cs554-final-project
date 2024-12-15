@@ -5,6 +5,7 @@ import {
   redirectToLogin,
 } from 'next-firebase-auth-edge';
 import { clientConfig, serverConfig } from './auth-config';
+import { get } from 'http';
 
 // Credit: Next-Firebase-Edge-Auth Minimal Starter Example
 const PUBLIC_PATHS = ['/register', '/login'];
@@ -53,6 +54,10 @@ export async function middleware(request: NextRequest) {
       });
     },
     handleError: async (error) => {
+      if (!AUTH_ENABLED) {
+        return NextResponse.next();
+      }
+
       console.error('Unhandled authentication error', { error });
 
       return redirectToLogin(request, {
