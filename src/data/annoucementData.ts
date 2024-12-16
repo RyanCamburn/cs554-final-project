@@ -16,10 +16,10 @@ interface Announcement {
   _id?: string;
   type: AnnouncementType;
   message: string;
-  createdAt?: Timestamp;
-  updatedAt?: Timestamp;
-  scheduleDate: Timestamp;
-  expirationDate: Timestamp;
+  createdAt?: Date;
+  updatedAt?: Date;
+  scheduleDate: Date;
+  expirationDate: Date;
   active: boolean;
 }
 

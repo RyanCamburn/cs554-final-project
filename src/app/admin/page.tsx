@@ -10,6 +10,7 @@ import {
   Text,
   Center,
   Select,
+  Title,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
@@ -49,13 +50,13 @@ export default function AdminPage() {
   const isAdmin = user && user.customClaims.role === 'admin';
   if (!user || !isAdmin) {
     return (
-      <>
+      <div>
         <Center>
           <Text size="xl" ta="center">
             You are not an admin!
           </Text>
         </Center>
-      </>
+      </div>
     );
   }
 
@@ -82,12 +83,14 @@ export default function AdminPage() {
   };
 
   return (
-    <>
-      <Center>
-        <Text size="xl" ta="center" color="white">
-          Admin Page
-        </Text>
-      </Center>
+    <div className="min-h-screen p-16">
+      <div>
+        <Center>
+          <Title className="text-4xl font-bold mb-2 justify-center pb-8 text-white">
+            Announcements
+          </Title>
+        </Center>
+      </div>
       <Modal
         opened={opened}
         onClose={close}
@@ -144,6 +147,6 @@ export default function AdminPage() {
           Create Announcement
         </Button>
       </Center>
-    </>
+    </div>
   );
 }

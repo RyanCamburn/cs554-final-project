@@ -6,17 +6,20 @@ import { Burger, Group, Paper, Transition } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { GearIcon } from '@radix-ui/react-icons';
 import LogoutButton from './LogoutButton';
+import { useAuth } from '@/sessions/AuthContext';
 
 export const links = [
   { link: '/about', label: 'About' },
   { link: '/directory', label: 'Directory' },
   { link: '/profile', label: 'Profile' },
+  { link: '/announcements', label: 'Announcements' },
 ];
 
 // reference: https://ui.mantine.dev/category/headers/#header-simple
 function Navbar() {
   const pathname = usePathname();
   const [opened, { toggle }] = useDisclosure(false);
+  const { user } = useAuth();
 
   return (
     <header className="h-20 fixed w-full bg-gray-700 z-50 text-white shadow-md flex items-center justify-between px-10">
@@ -35,6 +38,14 @@ function Navbar() {
             {link.label}
           </Link>
         ))}
+        {user?.customClaims?.role === 'admin' && (
+          <Link
+            href={'/admin'}
+            className="px-2 py-1 rounded-md transition-colors text-white hover:bg-gray-100 hover:text-gray-800"
+          >
+            Admin
+          </Link>
+        )}
         <Link
           href={'/settings'}
           className="px-2 py-2 rounded-full transition-colors text-white hover:bg-gray-100 hover:text-gray-800"
