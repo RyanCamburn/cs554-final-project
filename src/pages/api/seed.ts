@@ -8,17 +8,10 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { createUserWithUid } from '@/data/userData';
 import { auth } from '@/firebase';
 import { adminAuth } from '@/firebase-admin';
+import { logError } from '@/util';
 
 const USER_AMOUNT = 100;
 const MS_IN_DAY = 86400000;
-
-const logError = (e: unknown, message: string = '') => {
-  if (e instanceof Error) {
-    console.error(`❌ ${message}`, e.message);
-  } else {
-    console.error(`❌ ${message}`, e);
-  }
-};
 
 // This function is server-side implementation of intakeUser function from register.ts
 const intakeUser = async (user: UserRegisterFormValues) => {
