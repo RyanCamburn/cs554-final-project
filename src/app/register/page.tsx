@@ -18,7 +18,6 @@ import {
   Select,
 } from '@mantine/core';
 import { useRouter } from 'next/navigation';
-import { intakeUser } from './register';
 
 interface RegisterFormValues {
   firstName: string;
@@ -62,7 +61,20 @@ export default function Register() {
     setError('');
     try {
       const { firstName, lastName, email, gender, role, password } = values;
-      await intakeUser({ firstName, lastName, email, gender, role, password });
+      await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          gender,
+          role,
+          password,
+        }),
+      });
       router.push('/login');
     } catch (e) {
       setError((e as Error).message);

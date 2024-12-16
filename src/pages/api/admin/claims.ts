@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { adminAuth } from '@/firebase-admin';
 
 /**
+ * // FIXME: This endpoint needs to be secured, a request should contain a token with a valid admin claim
+ * // FIXME: If authenticated/authorized, the admin can elevate claims for a sepcific user
  * This endpoint uses the Firebase Admin SDK to set custom claims for a user.
  * Every mentor and mentee should be able to modify their own profile in the users collection
  * Mentors and Mentees should not be able to Create, Edit, or Delete announcments or events
