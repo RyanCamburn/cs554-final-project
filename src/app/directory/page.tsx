@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { User } from '@/data/userData';
-import { Title, Paper, Text, Box, LoadingOverlay } from '@mantine/core';
+import { Title, Paper, Text, Box, Loader } from '@mantine/core';
 import DirectoryTable from '@/components/DirectoryTable';
 
 const Directory = () => {
@@ -33,14 +33,15 @@ const Directory = () => {
       <Paper
         shadow="sm"
         p="xl"
-        className="max-w-6xl w-full rounded-xl text-black"
+        className="max-w-6xl w-full rounded-xl text-black min-h-32"
       >
         <Box pos="relative">
-          <LoadingOverlay
-            visible={!users || users.length === 0}
-            zIndex={1000}
-            overlayProps={{ radius: 'sm', blur: 2 }}
-          />
+          {(!users || users.length === 0) && (
+            <div className="flex justify-center items-center flex-col h-32 backdrop-blur-xl	">
+              <Loader />
+              <p className="text-lg">Loading directory...</p>
+            </div>
+          )}
           {users && users.length !== 0 && <DirectoryTable data={users} />}
         </Box>
       </Paper>
