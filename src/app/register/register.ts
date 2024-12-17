@@ -3,7 +3,7 @@ import { createUserWithUid } from '@/data/userData';
 import { auth } from '@/firebase';
 
 // TODO: can role be an ENUM?
-interface UserRegisterFormValues {
+export interface UserRegisterFormValues {
   firstName: string;
   lastName: string;
   email: string;
