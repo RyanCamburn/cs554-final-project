@@ -15,6 +15,15 @@ const config: Config = {
       fontFamily: {
         greycliff: ['Greycliff CF', 'var(--mantine-font-family)'],
       },
+      keyframes: {
+        'soft-bounce': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(10px)' },
+        },
+      },
+      animation: {
+        'soft-bounce': 'soft-bounce 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
     },
   },
   plugins: [],
