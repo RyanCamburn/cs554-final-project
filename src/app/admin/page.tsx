@@ -124,12 +124,24 @@ export default function AdminPage() {
             withAsterisk
             label="Schedule Start Date"
             placeholder="YYYY-MM-DD"
+            classNames={{
+              dropdown: 'w-fit min-w-[250px]',
+              calendarHeader: 'mb-1',
+              calendarHeaderControl: 'w-6 h-6 text-sm p-1',
+              calendar: 'text-sm p-2',
+            }}
             {...form.getInputProps('startDate')}
           />
           <DateInput
             withAsterisk
             label="Schedule Expiration Date"
             placeholder="YYYY-MM-DD"
+            classNames={{
+              dropdown: 'w-fit min-w-[250px]',
+              calendarHeader: 'mb-1',
+              calendarHeaderControl: 'w-6 h-6 text-sm p-1',
+              calendar: 'text-sm p-2',
+            }}
             {...form.getInputProps('expirationDate')}
           />
           <Group mt="md">
