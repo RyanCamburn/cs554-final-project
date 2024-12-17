@@ -7,7 +7,7 @@
 .react-calendar {
   width: 100% !important;
   height: 100% !important;
-  border: none; 
+  border: none;
   box-sizing: border-box;
 }
 
@@ -17,5 +17,5 @@
 }
 
 .react-calendar__month-view__days__day--weekend {
-  color: inherit !important; 
+  color: inherit !important;
 }
