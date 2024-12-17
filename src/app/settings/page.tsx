@@ -13,6 +13,7 @@ import {
 } from '@mantine/core';
 import { IMaskInput } from 'react-imask';
 import { notifications } from '@mantine/notifications';
+import { useAuth } from '@/sessions/AuthContext';
 
 // const ROLES = ["Admin", "Mentor", "Mentee"] as const;
 // const PERMISSIONS = ["all", "announcements", "matching"] as const;
@@ -41,6 +42,7 @@ type FormValues = {
 
 export default function ProfilePage() {
   // TODO: get user information from the session - using example data for now
+
   const currentUser: FormValues = {
     firstName: 'John',
     lastName: 'Doe',
@@ -71,14 +73,38 @@ export default function ProfilePage() {
     },
   });
 
+  const { user } = useAuth();
+  const currentUID = user.uid;
+
   const handleSubmit = async (values: FormValues) => {
     try {
-      // TODO: Implement API call to update user profile
       console.log('Form values:', values);
-      notifications.show({
-        message: 'Successfully updated profile',
-        color: 'green',
+      const response = await fetch('/api/users/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: currentUID,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+          phoneNumber: values.phoneNumber,
+          gender: values.gender,
+          industry: values.industry,
+        }),
       });
+      const data = await response.json();
+      console.log('Update response:', data);
+      if (response.ok) {
+        notifications.show({
+          message: 'Successfully updated profile',
+          color: 'green',
+        });
+      } else {
+        notifications.show({
+          message: 'Error updating profile. Try again.',
+          color: 'red',
+        });
+      }
     } catch (error) {
       console.error('Failed to update profile:', error);
       notifications.show({
