@@ -299,12 +299,26 @@ export default function AnnouncementsPage() {
               withAsterisk
               label="Schedule Date"
               placeholder="YYYY-MM-DD"
+              classNames={{
+                dropdown: 'w-fit min-w-[250px]' /* Fit content width */,
+                calendarHeader: 'mb-1' /* Compact header margin */,
+                calendarHeaderControl:
+                  'w-6 h-6 text-sm p-1' /* Smaller arrow buttons */,
+                calendar: 'text-sm p-2' /* Compact calendar */,
+              }}
               {...form.getInputProps('scheduleDate')}
             />
             <DateInput
               withAsterisk
               label="Expiration Date"
               placeholder="YYYY-MM-DD"
+              classNames={{
+                dropdown: 'w-fit min-w-[250px]' /* Fit content width */,
+                calendarHeader: 'mb-1' /* Compact header margin */,
+                calendarHeaderControl:
+                  'w-6 h-6 text-sm p-1' /* Smaller arrow buttons */,
+                calendar: 'text-sm p-2' /* Compact calendar */,
+              }}
               {...form.getInputProps('expirationDate')}
             />
             <Select
