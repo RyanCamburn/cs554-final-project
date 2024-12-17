@@ -1,6 +1,8 @@
 import { Handle, Position } from '@xyflow/react';
 import Avvvatars from 'avvvatars-react';
 
+// Attemp to render userNode
+
 export default function UserNode({ data = { _id: 'asdfasd ' } }) {
   return (
     <>
