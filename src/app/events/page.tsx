@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { getDocs, collection } from 'firebase/firestore';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './calendar.css';
@@ -55,22 +54,18 @@ export default function EventsPage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'events'));
-        const fetchedEvents = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          date: new Date(doc.data().date), // Convert ISO string to Date
-        }));
-        setEvents(fetchedEvents);
-      } catch (error) {
-        console.error('Error fetching events: ', error);
+        const response = await fetch('/api/events');
+        const events = await response.json();
+        setEvents(events);
+      } catch (e) {
+        console.error(e);
       }
     };
-
     fetchEvents();
+    console.log(fetchEvents());
   }, []);
 
-  const createOrUpdateEvent = (values: EventFormValues) => {
+  const createOrUpdateEvent = async (values: EventFormValues) => {
     if (!selectedDate) {
       form.setFieldError('eventName', 'Please select a date first.');
       return;
@@ -86,31 +81,69 @@ export default function EventsPage() {
 
     if (editingEventId !== null) {
       // Update an existing event
-      setEvents((prevEvents) =>
-        prevEvents.map((event) =>
-          event.id === editingEventId
-            ? { ...event, ...values, date: selectedDate }
-            : event,
-        ),
-      );
-      setEditingEventId(null);
+      const response = await fetch('/api/events/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editingEventId,
+          date: selectedDate.toISOString(),
+          ...values,
+        }),
+      });
+
+      if (response.ok) {
+        setEvents((prevEvents) =>
+          prevEvents.map((event) =>
+            event.id === editingEventId
+              ? { ...event, date: new Date(selectedDate), ...values }
+              : event,
+          ),
+        );
+        setEditingEventId(null);
+      } else {
+        console.error('Failed to update event');
+      }
     } else {
       // Create a new event
-      const newEvent: Event = {
-        id: new Date().getTime(),
-        date: selectedDate,
-        ...values,
-      };
-      setEvents((prevEvents) => [...prevEvents, newEvent]);
+      const response = await fetch('/api/events/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: selectedDate.toISOString(),
+          ...values,
+        }),
+      });
+
+      if (response.ok) {
+        const { id } = await response.json();
+        const newEvent: Event = {
+          id,
+          date: new Date(selectedDate),
+          ...values,
+        };
+        setEvents((prevEvents) => [...prevEvents, newEvent]);
+      } else {
+        console.error('Failed to create event');
+      }
     }
 
     form.reset();
   };
 
-  const deleteEvent = (eventId: number) => {
-    setEvents((prevEvents) =>
-      prevEvents.filter((event) => event.id !== eventId),
-    );
+  const deleteEvent = async (eventId: number) => {
+    const response = await fetch('/api/events/delete', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: eventId }),
+    });
+
+    if (response.ok) {
+      setEvents((prevEvents) =>
+        prevEvents.filter((event) => event.id !== eventId),
+      );
+    } else {
+      console.error('Failed to delete event');
+    }
   };
 
   const editEvent = (event: Event) => {
@@ -138,12 +171,12 @@ export default function EventsPage() {
           Events
         </Title>
 
-        {/* Flexbox for Side-by-Side Layout */}
+        {/* Flexbox for Calendar/Event Form Layout */}
         <Box style={{ display: 'flex', gap: '20px', alignItems: 'stretch' }}>
           {/* Calendar */}
           <Card
             shadow="sm"
-            padding="0" /* Keep padding at 0 to control it explicitly */
+            padding="0"
             radius="md"
             withBorder
             style={{ flex: '1', display: 'flex', alignItems: 'stretch' }}
@@ -161,8 +194,7 @@ export default function EventsPage() {
                 flex: '1',
                 width: '100%',
                 height: '100%',
-                padding:
-                  '20px' /* Add padding to create space around the calendar */,
+                padding: '20px',
                 boxSizing: 'border-box',
               }}
             >
@@ -170,12 +202,10 @@ export default function EventsPage() {
                 value={selectedDate}
                 onClickDay={setSelectedDate}
                 tileClassName={({ date }) =>
-                  selectedDate &&
-                  date.toDateString() === selectedDate.toDateString()
+                  selectedDate && date.toString() === selectedDate.toString()
                     ? 'selected'
                     : events.some(
-                          (event) =>
-                            event.date.toDateString() === date.toDateString(),
+                          (event) => event.date.toString() === date.toString(),
                         )
                       ? 'event-marked'
                       : ''
@@ -199,7 +229,14 @@ export default function EventsPage() {
             <form onSubmit={form.onSubmit(createOrUpdateEvent)}>
               <Text my="sm">
                 Selected Date:{' '}
-                {selectedDate ? selectedDate.toDateString() : 'None'}
+                {selectedDate
+                  ? selectedDate.toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })
+                  : 'None'}
               </Text>
 
               <TextInput
@@ -231,14 +268,12 @@ export default function EventsPage() {
                 {...form.getInputProps('location')}
                 required
               />
-
               <TextInput
                 label="Description"
                 placeholder="Enter Event Description"
                 {...form.getInputProps('description')}
                 required
               />
-
               <Group mt="md">
                 <Button type="submit" color="blue">
                   {editingEventId ? 'Update Event' : 'Create Event'}
@@ -247,7 +282,6 @@ export default function EventsPage() {
             </form>
           </Card>
         </Box>
-
         {/* Event List */}
         <Card shadow="sm" padding="lg" radius="md" mt="lg" withBorder>
           <Title order={3}>Event List</Title>
@@ -269,7 +303,7 @@ export default function EventsPage() {
                   <strong>Title:</strong> {event.eventName}
                 </Text>
                 <Text>
-                  <strong>Date:</strong> {event.date.toDateString()}
+                  <strong>Date:</strong> {event.date.toString()}
                 </Text>
                 <Text>
                   <strong>Start Time:</strong> {event.startTime}
