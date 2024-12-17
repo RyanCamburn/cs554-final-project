@@ -138,7 +138,7 @@ export default function DirectoryTable({ data }: { data: User[] }) {
   };
 
   const rows = sortedData.map((row) => (
-    <Table.Tr key={row.firstName + '_' + row.lastName}>
+    <Table.Tr key={row._id}>
       <Table.Td>{row.firstName + ' ' + row.lastName}</Table.Td>
       <Table.Td>
         {row.role === 'admin' && (
@@ -192,18 +192,18 @@ export default function DirectoryTable({ data }: { data: User[] }) {
       >
         <Table.Tbody>
           <Table.Tr>
-            {tableHeaders.map((headerTitle) => {
+            {tableHeaders.map((columnTitle) => {
               return (
                 <Th
-                  key={headerTitle}
-                  sorted={sortBy === headerTitle.toLowerCase()}
+                  key={columnTitle}
+                  sorted={sortBy === columnTitle.toLowerCase()}
                   reversed={reverseSortDirection}
                   onSort={() =>
-                    setSorting(headerTitle.toLowerCase() as keyof User)
+                    setSorting(columnTitle.toLowerCase() as keyof User)
                   }
-                  value={headerTitle}
+                  value={columnTitle}
                 >
-                  {headerTitle}
+                  {columnTitle}
                 </Th>
               );
             })}
