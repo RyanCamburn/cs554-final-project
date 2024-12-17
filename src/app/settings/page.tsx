@@ -73,12 +73,33 @@ export default function ProfilePage() {
 
   const handleSubmit = async (values: FormValues) => {
     try {
-      // TODO: Implement API call to update user profile
       console.log('Form values:', values);
-      notifications.show({
-        message: 'Successfully updated profile',
-        color: 'green',
+      const response = await fetch('/api/users/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: '', //TODO: get user id from session
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+          phoneNumber: values.phoneNumber,
+          gender: values.gender,
+          industry: values.industry,
+        }),
       });
+      const data = await response.json();
+      console.log('Update response:', data);
+      if (response.ok) {
+        notifications.show({
+          message: 'Successfully updated profile',
+          color: 'green',
+        });
+      } else {
+        notifications.show({
+          message: 'Error updating profile. Try again.',
+          color: 'red',
+        });
+      }
     } catch (error) {
       console.error('Failed to update profile:', error);
       notifications.show({
