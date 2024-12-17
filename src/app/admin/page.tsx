@@ -87,7 +87,7 @@ export default function AdminPage() {
       <div>
         <Center>
           <Title className="text-4xl font-bold mb-2 justify-center pb-8 text-white">
-            Announcements
+            Admin Dashboard
           </Title>
         </Center>
       </div>
