@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { adminAuth } from '@/firebase-admin';
+import { authenticateToken } from '@/data/serverAuth';
 
 /**
  * // FIXME: This endpoint needs to be secured, a request should contain a token with a valid admin claim

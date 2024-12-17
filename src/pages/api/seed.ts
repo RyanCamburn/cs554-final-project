@@ -1,6 +1,6 @@
 import { getAllUsers } from '@/data/userData';
 import { createAnnouncement, type Announcement } from '@/data/annoucementData';
-import type { UserRegisterFormValues } from '@/app/register/register';
+import type { UserRegisterFormValues } from './auth/register';
 import { faker } from '@faker-js/faker';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Timestamp } from 'firebase/firestore';
