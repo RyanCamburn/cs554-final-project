@@ -32,6 +32,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Running the Firebase Emulators:
 
+IMPORTANT - to run the Firebase Emulators, you must have the following installed:
+
+- Node.js version 16.0 or higher.
+- Java JDK version 11 or higher.
+
 We make use of the [Firebase Local Emulator Suite](https://firebase.google.com/docs/emulator-suite) for development to avoid interacting with the production Firebase services. You can change the application's Firebase configuration to point to the local emulators by setting the `NEXT_PUBLIC_NODE_ENV` environment variable to `development` in your `.env.local` file.
 
 To run the emulators:
