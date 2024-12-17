@@ -9,6 +9,7 @@ import UserNode from './UserNode';
 import { ReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
+// This file is a WIP implementation of the tree diagram for the mentorship relations
 interface MentorshipTreeProps {
   user: User;
   assignees?: string[];
@@ -75,6 +76,7 @@ export default function MentorshipTree({
 
   return (
     <div className="p-16 relative">
+      {/* Attempt 1 : Using React Flow */}
       <div className="h-64 border-2 border-gray-300 rounded-lg">
         <ReactFlow
           nodes={initialNodes}
@@ -83,6 +85,8 @@ export default function MentorshipTree({
           nodeTypes={nodeTypes}
         />
       </div>
+
+      {/* Attemp 2 : Manually displaying tree-like diagram*/}
       {/* Mentor Node */}
       <div className="flex justify-center mb-8">
         <Paper
