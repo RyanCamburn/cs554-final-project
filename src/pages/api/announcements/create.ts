@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createAnnouncement } from '@/data/annoucementData';
 import getUIDandRole from '@/data/serverAuth';
+import { RedisClientType } from 'redis';
+import redisClient, { deleteCacheKey } from '@/cache';
 
 export default async function handler(
   req: NextApiRequest,
@@ -37,6 +39,7 @@ export default async function handler(
       expirationDate,
       active,
     });
+    await deleteCacheKey(redisClient as RedisClientType, 'announcements');
     res.status(201).json({ id });
   } catch (error) {
     console.error(error);

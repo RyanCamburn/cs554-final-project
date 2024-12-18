@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { deleteAnnouncement } from '@/data/annoucementData';
 import getUIDandRole from '@/data/serverAuth';
+import { RedisClientType } from 'redis';
+import redisClient, { deleteCacheKey } from '@/cache';
 
 export default async function handler(
   req: NextApiRequest,
@@ -34,6 +36,7 @@ export default async function handler(
 
   try {
     await deleteAnnouncement(id);
+    await deleteCacheKey(redisClient as RedisClientType, 'announcements');
     res.status(200).json({ message: 'Announcement deleted successfully' });
   } catch (error) {
     console.error(error);
