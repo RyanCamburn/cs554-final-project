@@ -31,6 +31,7 @@ export default function Login() {
     try {
       const { email, password } = values;
       await loginUser(email, password);
+      router.refresh();
       router.push('/');
     } catch (e) {
       setError((e as Error).message);
