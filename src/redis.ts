@@ -1,4 +1,3 @@
-import Redis from 'ioredis'; // https://github.com/redis/ioredis
+import { createClient } from 'redis';
 
-// Default connects to localhost:6379
-export const redis = new Redis();
+const client = createClient({ host: 'localhost', port: 6379 });
