@@ -1,6 +1,9 @@
 'use client';
 
-import { isEmail, isNotEmpty, useForm } from '@mantine/form';
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '@/sessions/AuthContext';
+import { useForm } from '@mantine/form';
+import { isNotEmpty, isEmail } from '@mantine/form';
 import {
   TextInput,
   Select,
@@ -10,13 +13,11 @@ import {
   Text,
   Grid,
   Input,
+  Loader,
 } from '@mantine/core';
 import { IMaskInput } from 'react-imask';
 import { notifications } from '@mantine/notifications';
-import { useAuth } from '@/sessions/AuthContext';
 
-// const ROLES = ["Admin", "Mentor", "Mentee"] as const;
-// const PERMISSIONS = ["all", "announcements", "matching"] as const;
 const GENDERS = ['Male', 'Female', 'Other', 'Prefer not to say'] as const;
 const INDUSTRIES = [
   'Technology',
@@ -36,32 +37,21 @@ type FormValues = {
   phoneNumber: string;
   gender: (typeof GENDERS)[number];
   industry: (typeof INDUSTRIES)[number] | '';
-  // role: (typeof ROLES)[number];
-  // permissions: (typeof PERMISSIONS)[number];
 };
 
 export default function ProfilePage() {
-  // TODO: get user information from the session - using example data for now
-
-  const currentUser: FormValues = {
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'johndoe@email.com',
-    phoneNumber: '+1 (123) 456-7890',
-    gender: 'Male',
-    industry: 'Technology',
-  };
+  const { user } = useAuth();
+  const [currentUser, setCurrentUser] = useState<FormValues | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const form = useForm<FormValues>({
     initialValues: {
-      firstName: currentUser.firstName,
-      lastName: currentUser.lastName,
-      email: currentUser.email,
-      phoneNumber: currentUser.phoneNumber,
-      gender: currentUser.gender,
-      industry: currentUser.industry,
-      // role: "Mentee",
-      // permissions: "announcements",
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneNumber: '',
+      gender: 'Male',
+      industry: 'Technology',
     },
     validate: {
       firstName: isNotEmpty('First name must not be empty'),
@@ -73,11 +63,43 @@ export default function ProfilePage() {
     },
   });
 
-  const { user } = useAuth();
-  const currentUID = user.uid;
+  useEffect(() => {
+    if (user) {
+      fetch(`/api/users/${user.uid}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setCurrentUser(data);
+          form.setValues({
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            phoneNumber: data.phoneNumber,
+            gender: data.gender,
+            industry: data.industry,
+          });
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Error fetching user data:', error);
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
 
   const handleSubmit = async (values: FormValues) => {
     try {
+      const currentUID = user?.uid || '';
+      if (!currentUID) {
+        throw new Error('User ID is not available');
+      }
+
       console.log('Form values:', values);
       const response = await fetch('/api/users/update', {
         method: 'PUT',
@@ -113,6 +135,15 @@ export default function ProfilePage() {
       });
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center flex-col h-32 backdrop-blur-xl">
+        <Loader />
+        <p className="text-lg">Loading profile...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen py-12 flex flex-col justify-center items-center">
@@ -202,29 +233,6 @@ export default function ProfilePage() {
                 </Grid.Col>
               </Grid>
             </div>
-
-            {/* TODO: Role & Permissions Section - used by admin? */}
-            {/* <div>
-							<Title order={3} className="text-lg font-semibold mb-4">
-								Role & Permissions
-							</Title>
-							<Grid>
-								<Grid.Col span={{ base: 12, md: 6 }}>
-									<Select
-										label="Role"
-										data={ROLES}
-										{...form.getInputProps("role")}
-									/>
-								</Grid.Col>
-								<Grid.Col span={{ base: 12, md: 6 }}>
-									<Select
-										label="Permissions"
-										data={PERMISSIONS}
-										{...form.getInputProps("permissions")}
-									/>
-								</Grid.Col>
-							</Grid>
-						</div> */}
 
             <Button
               type="submit"
