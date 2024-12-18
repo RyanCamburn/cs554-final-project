@@ -20,7 +20,9 @@ export interface User {
   phoneNumber?: string;
   gender: string;
   industry?: string;
-  assignees?: string;
+  jobTitle?: string;
+  company?: string;
+  assignees?: string[];
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
