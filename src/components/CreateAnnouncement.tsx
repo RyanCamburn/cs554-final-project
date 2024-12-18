@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Modal, Button, Group, TextInput, Select } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
+import '@mantine/dates/styles.css';
 
 type AnnouncementType = 'info' | 'warning' | 'error';
 

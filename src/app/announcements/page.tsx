@@ -269,6 +269,9 @@ export default function AnnouncementsPage() {
                 Edit
               </Button>
             )}
+            <Button color="red" onClick={() => handleDelete(announcement.id)}>
+              Delete
+            </Button>
           </Card>
         ))}
 
@@ -343,9 +346,6 @@ export default function AnnouncementsPage() {
             />
             <Group mt="md">
               <Button type="submit">Save Changes</Button>
-              <Button color="red" onClick={() => handleDelete(form.values.id)}>
-                Delete
-              </Button>
             </Group>
           </form>
         </Modal>
