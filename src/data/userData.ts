@@ -10,6 +10,7 @@ import {
   setDoc,
 } from 'firebase/firestore';
 import { db } from '../firebase';
+import { adminAuth } from '../firebase-admin';
 
 export interface User {
   _id?: string;
@@ -78,6 +79,10 @@ export async function updateUser(
   try {
     const docRef = doc(db, 'users', id);
     await updateDoc(docRef, { ...updatedFields, updatedAt: Timestamp.now() });
+
+    if (updatedFields.email) {
+      await adminAuth.updateUser(id, { email: updatedFields.email });
+    }
   } catch (pingus) {
     throw new Error(`Failed to update user: ${pingus}`);
   }
@@ -86,8 +91,14 @@ export async function updateUser(
 export async function deleteUser(id: string): Promise<void> {
   try {
     const docRef = doc(db, 'users', id);
+    const snapshot = await getDoc(docRef);
+    if (!snapshot.exists()) {
+      throw new Error('User does not exist');
+    }
+
     await deleteDoc(docRef);
+    await adminAuth.deleteUser(id);
   } catch (pingus) {
-    throw new Error(`Failed to get all users: ${pingus}`);
+    throw new Error(`Failed to delete user: ${pingus}`);
   }
 }
