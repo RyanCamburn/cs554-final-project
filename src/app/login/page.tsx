@@ -14,7 +14,6 @@ interface LoginFormValues {
 export default function Login() {
   const [error, setError] = useState('');
   const router = useRouter();
-
   const loginForm = useForm({
     initialValues: {
       email: '',
@@ -31,7 +30,6 @@ export default function Login() {
     try {
       const { email, password } = values;
       await loginUser(email, password);
-      router.refresh();
       router.push('/');
     } catch (e) {
       setError((e as Error).message);
