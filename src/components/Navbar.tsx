@@ -8,7 +8,6 @@ import { GearIcon } from '@radix-ui/react-icons';
 import LogoutButton from './LogoutButton';
 
 export const links = [
-  { link: '/about', label: 'About' },
   { link: '/events', label: 'Events' },
   { link: '/directory', label: 'Directory' },
   { link: '/profile', label: 'Profile' },
