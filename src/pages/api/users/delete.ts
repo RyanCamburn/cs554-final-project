@@ -7,6 +7,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  if (req.method !== 'DELETE') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   const tokens = await getApiRequestTokens(req, {
     ...serverConfig,
     apiKey: clientConfig.apiKey,
