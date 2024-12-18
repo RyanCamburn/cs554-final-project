@@ -18,7 +18,7 @@ import {
 import { IMaskInput } from 'react-imask';
 import { notifications } from '@mantine/notifications';
 
-const GENDERS = ['Male', 'Female', 'Other', 'Prefer not to say'] as const;
+const GENDERS = ['Male', 'Female', 'Non-binary'] as const;
 const INDUSTRIES = [
   'Technology',
   'Healthcare',
@@ -37,6 +37,8 @@ type FormValues = {
   phoneNumber: string;
   gender: (typeof GENDERS)[number];
   industry: (typeof INDUSTRIES)[number] | '';
+  jobTitle?: string;
+  company?: string;
 };
 
 export default function ProfilePage() {
@@ -53,6 +55,8 @@ export default function ProfilePage() {
       phoneNumber: '',
       gender: '',
       industry: '',
+      jobTitle: '',
+      company: '',
     },
     validate: {
       firstName: isNotEmpty('First name must not be empty'),
@@ -82,6 +86,8 @@ export default function ProfilePage() {
             phoneNumber: data.phoneNumber,
             gender: data.gender,
             industry: data.industry,
+            jobTitle: data.jobTitle,
+            company: data.company,
           });
           setLoading(false);
         })
@@ -113,6 +119,8 @@ export default function ProfilePage() {
           phoneNumber: values.phoneNumber,
           gender: values.gender,
           industry: values.industry,
+          jobTitle: values.jobTitle,
+          company: values.company,
         }),
       });
       const data = await response.json();
@@ -230,6 +238,20 @@ export default function ProfilePage() {
                     placeholder="Select your industry"
                     {...form.getInputProps('industry')}
                     searchable
+                  />
+                </Grid.Col>
+                <Grid.Col span={{ base: 12, md: 6 }}>
+                  <TextInput
+                    label="Job Title"
+                    placeholder="Student"
+                    {...form.getInputProps('jobTitle')}
+                  />
+                </Grid.Col>
+                <Grid.Col span={{ base: 12, md: 6 }}>
+                  <TextInput
+                    label="Company"
+                    placeholder="Stevens Institute of Technology"
+                    {...form.getInputProps('company')}
                   />
                 </Grid.Col>
               </Grid>
