@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { deleteUser } from '@/data/userData';
 import getUIDandRole from '@/data/serverAuth';
+import { RedisClientType } from 'redis';
+import redisClient, { deleteCacheKey } from '@/cache';
 
 export default async function handler(
   req: NextApiRequest,
@@ -40,6 +42,7 @@ export default async function handler(
     if (!userDeleted) {
       return res.status(404).json({ error: 'User does not exist' });
     }
+    await deleteCacheKey(redisClient as RedisClientType, 'users');
     res.status(200).json({ message: 'User deleted successfully' });
   } catch (error) {
     console.error('Failed to delete user:', error);

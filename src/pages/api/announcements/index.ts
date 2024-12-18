@@ -23,13 +23,6 @@ export default async function handler(
     return res.status(401).json({ error: 'Not authorized' });
   }
 
-  // Check cache
-  const cachedAnnouncements = await redisClient.get('announcements');
-  if (cachedAnnouncements) {
-    console.log('Announcement Cache Hit!');
-    return res.status(200).json(JSON.parse(cachedAnnouncements));
-  }
-
   // Everyone who has an account should be able to read the events
   if (!role || !uid) {
     return res.status(403).json({
@@ -37,9 +30,16 @@ export default async function handler(
     });
   }
 
+  // Check cache
+  const cachedAnnouncements = await redisClient.get('announcements');
+  if (cachedAnnouncements) {
+    console.log('Announcement Cache Hit!');
+    return res.status(200).json(JSON.parse(cachedAnnouncements));
+  }
+
   try {
     const announcements = await getAllAnnouncements();
-    await redisClient.set('users', JSON.stringify(announcements), { EX: 3600 });
+    await redisClient.set('announcements', JSON.stringify(announcements), { EX: 3600 });
     res.status(200).json(announcements);
   } catch (error) {
     console.error(error);
