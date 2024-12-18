@@ -6,8 +6,6 @@ import { useAuth } from '@/sessions/AuthContext';
 
 export default function AdminPage() {
   const { user } = useAuth();
-  console.log(user);
-  const isAdmin = user && user.customClaims.role === 'admin';
 
   const deleteUserForm = useForm({
     initialValues: {
@@ -15,7 +13,7 @@ export default function AdminPage() {
     },
     validate: {
       id: isNotEmpty('ID is required'),
-    }
+    },
   });
 
   const handleDelete = async (values: { id: string }) => {
@@ -29,18 +27,18 @@ export default function AdminPage() {
     });
 
     if (response.ok) {
-      console.log("User deleted successfully");
+      console.log('User deleted successfully');
     } else {
-      console.error("Failed to delete user");
+      console.error('Failed to delete user');
     }
-  }
+  };
 
   return (
     <div>
       <h1 className="text-white">Admin Page</h1>
-      <form onSubmit={deleteUserForm.onSubmit((values) =>
-        handleDelete(values),
-      )}>
+      <form
+        onSubmit={deleteUserForm.onSubmit((values) => handleDelete(values))}
+      >
         <TextInput
           withAsterisk
           label="User ID"
@@ -48,7 +46,9 @@ export default function AdminPage() {
           required
           {...deleteUserForm.getInputProps('id')}
         />
-        <Button type="submit" color="red">Delete User</Button>
+        <Button type="submit" color="red">
+          Delete User
+        </Button>
       </form>
     </div>
   );
