@@ -228,15 +228,21 @@ export default function EventsPage() {
             </Title>
             <form onSubmit={form.onSubmit(createOrUpdateEvent)}>
               <Text my="sm">
-                Selected Date:{' '}
-                {selectedDate
+                {selectedDate instanceof Date
                   ? selectedDate.toLocaleDateString('en-US', {
                       weekday: 'long',
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
                     })
-                  : 'None'}
+                  : selectedDate
+                    ? new Date(selectedDate).toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
+                    : 'None'}
               </Text>
 
               <TextInput
