@@ -32,7 +32,9 @@ function Navbar() {
         {links.map((link) => (
           <Link
             key={link.link}
-            href={link.link}
+            href={
+              link.label === 'Profile' ? `${link.link}/${user?.uid}` : link.link
+            }
             className="px-2 py-1 rounded-md transition-colors text-white hover:bg-gray-100 hover:text-gray-800"
           >
             {link.label}
@@ -74,7 +76,11 @@ function Navbar() {
               {links.map((link) => (
                 <Link
                   key={link.link}
-                  href={link.link}
+                  href={
+                    link.label === 'Profile'
+                      ? `${link.link}/${user?.uid}`
+                      : link.link
+                  }
                   className={`block px-3 py-2 rounded-md transition-colors ${
                     pathname === link.link
                       ? 'bg-blue-50 text-blue-700'

@@ -34,12 +34,15 @@ export default async function handler(
       error: 'Forbidden: You do not have permission to perform this action.',
     });
   }
-
+  
   try {
-    await deleteUser(id);
-    return res.status(200).json({ message: 'User deleted successfully' });
+    const userDeleted = await deleteUser(id);
+    if (!userDeleted) {
+      return res.status(404).json({ error: 'User does not exist' });
+    }
+    res.status(200).json({ message: 'User deleted successfully' });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Failed to delete user' });
+    console.error('Failed to delete user:', error);
+    res.status(500).json({ error: 'Failed to delete user' });
   }
 }
