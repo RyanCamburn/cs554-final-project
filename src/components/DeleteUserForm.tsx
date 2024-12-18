@@ -37,7 +37,9 @@ export default function DeleteUserForm() {
 
   return (
     <form
-      onSubmit={deleteUserForm.onSubmit((values) => handleDeleteCookie(values))}
+      onSubmit={deleteUserForm.onSubmit((values) =>
+        handleDeleteCookie(values),
+      )}
     >
       <TextInput
         withAsterisk
