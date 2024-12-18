@@ -14,6 +14,8 @@
   "dependencies": {
     "@mantine/core": "^7.15.1",
     "@mantine/dates": "^7.15.1",
+    "@mantine/core": "^7.15.1",
+    "@mantine/dates": "^7.15.1",
     "@mantine/form": "^7.14.1",
     "@mantine/hooks": "^7.14.1",
     "@mantine/notifications": "^7.15.1",
@@ -31,6 +33,7 @@
     "react-dom": "^18.3.1",
     "react-imask": "^7.6.1",
     "react-toastify": "^10.0.6",
+    "scheduler": "^0.25.0",
     "redis": "^4.7.0",
     "scheduler": "^0.25.0",
     "redis": "^4.7.0"
