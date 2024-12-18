@@ -15,6 +15,7 @@ import {
   Box,
 } from '@mantine/core';
 import { useForm, isNotEmpty } from '@mantine/form';
+import { useAuth } from '@/sessions/AuthContext';
 
 interface EventFormValues {
   eventName: string;
@@ -33,6 +34,8 @@ export default function EventsPage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
   const [editingEventId, setEditingEventId] = useState<number | null>(null);
+  const { user } = useAuth();
+  const isAdmin = user && user.customClaims.role === 'admin';
 
   const form = useForm<EventFormValues>({
     initialValues: {
@@ -215,78 +218,75 @@ export default function EventsPage() {
             </div>
           </Card>
 
-          {/* Event Form */}
-          <Card
-            shadow="sm"
-            padding="lg"
-            radius="md"
-            withBorder
-            style={{ flex: '1', width: '50%' }}
-          >
-            <Title order={3}>
-              {editingEventId ? 'Update Event' : 'Create Event'}
-            </Title>
-            <form onSubmit={form.onSubmit(createOrUpdateEvent)}>
-              <Text my="sm">
-                {selectedDate instanceof Date
-                  ? selectedDate.toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })
-                  : selectedDate
-                    ? new Date(selectedDate).toLocaleDateString('en-US', {
+          {/* Event Form - Only visible to admins */}
+          {isAdmin && (
+            <Card
+              shadow="sm"
+              padding="lg"
+              radius="md"
+              withBorder
+              style={{ flex: '1', width: '50%' }}
+            >
+              <Title order={3}>
+                {editingEventId ? 'Update Event' : 'Create Event'}
+              </Title>
+              <form onSubmit={form.onSubmit(createOrUpdateEvent)}>
+                <Text my="sm">
+                  {selectedDate instanceof Date
+                    ? selectedDate.toLocaleDateString('en-US', {
                         weekday: 'long',
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric',
                       })
                     : 'None'}
-              </Text>
+                </Text>
 
-              <TextInput
-                label="Event Name"
-                placeholder="Enter Event Name"
-                {...form.getInputProps('eventName')}
-                required
-              />
+                <TextInput
+                  label="Event Name"
+                  placeholder="Enter Event Name"
+                  {...form.getInputProps('eventName')}
+                  required
+                />
 
-              <TextInput
-                label="Start Time"
-                placeholder="HH:MM"
-                type="time"
-                {...form.getInputProps('startTime')}
-                required
-              />
+                <TextInput
+                  label="Start Time"
+                  placeholder="HH:MM"
+                  type="time"
+                  {...form.getInputProps('startTime')}
+                  required
+                />
 
-              <TextInput
-                label="End Time"
-                placeholder="HH:MM"
-                type="time"
-                {...form.getInputProps('endTime')}
-                required
-              />
+                <TextInput
+                  label="End Time"
+                  placeholder="HH:MM"
+                  type="time"
+                  {...form.getInputProps('endTime')}
+                  required
+                />
 
-              <TextInput
-                label="Location"
-                placeholder="Enter Event Location"
-                {...form.getInputProps('location')}
-                required
-              />
-              <TextInput
-                label="Description"
-                placeholder="Enter Event Description"
-                {...form.getInputProps('description')}
-                required
-              />
-              <Group mt="md">
-                <Button type="submit" color="blue">
-                  {editingEventId ? 'Update Event' : 'Create Event'}
-                </Button>
-              </Group>
-            </form>
-          </Card>
+                <TextInput
+                  label="Location"
+                  placeholder="Enter Event Location"
+                  {...form.getInputProps('location')}
+                  required
+                />
+
+                <TextInput
+                  label="Description"
+                  placeholder="Enter Event Description"
+                  {...form.getInputProps('description')}
+                  required
+                />
+
+                <Group mt="md">
+                  <Button type="submit" color="blue">
+                    {editingEventId ? 'Update Event' : 'Create Event'}
+                  </Button>
+                </Group>
+              </form>
+            </Card>
+          )}
         </Box>
         {/* Event List */}
         <Card shadow="sm" padding="lg" radius="md" mt="lg" withBorder>
@@ -323,22 +323,24 @@ export default function EventsPage() {
                 <Text>
                   <strong>Description:</strong> {event.description}
                 </Text>
-                <Group mt="sm">
-                  <Button
-                    size="xs"
-                    color="yellow"
-                    onClick={() => editEvent(event)}
-                  >
-                    Update
-                  </Button>
-                  <Button
-                    size="xs"
-                    color="red"
-                    onClick={() => deleteEvent(event.id)}
-                  >
-                    Delete
-                  </Button>
-                </Group>
+                {isAdmin && (
+                  <Group mt="sm">
+                    <Button
+                      size="xs"
+                      color="yellow"
+                      onClick={() => editEvent(event)}
+                    >
+                      Update
+                    </Button>
+                    <Button
+                      size="xs"
+                      color="red"
+                      onClick={() => deleteEvent(event.id)}
+                    >
+                      Delete
+                    </Button>
+                  </Group>
+                )}
               </Card>
             ))
           )}
