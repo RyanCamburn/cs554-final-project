@@ -33,11 +33,29 @@ export default function AdminPage() {
     }
   };
 
+  const handleDeleteCookie = async (values: { id: string }) => {
+    const response = await fetch('/api/users/delete', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(values),
+    });
+
+    if (response.ok) {
+      console.log('User deleted successfully');
+    } else {
+      console.error('Failed to delete user');
+    }
+  };
+
   return (
     <div>
       <h1 className="text-white">Admin Page</h1>
       <form
-        onSubmit={deleteUserForm.onSubmit((values) => handleDelete(values))}
+        onSubmit={deleteUserForm.onSubmit((values) =>
+          handleDeleteCookie(values),
+        )}
       >
         <TextInput
           withAsterisk

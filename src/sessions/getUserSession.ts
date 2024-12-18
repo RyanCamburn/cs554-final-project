@@ -2,7 +2,7 @@ import { filterStandardClaims } from 'next-firebase-auth-edge/lib/auth/claims';
 import { Tokens } from 'next-firebase-auth-edge';
 import { User } from './AuthContext';
 
-export const getUserSession = ({token, decodedToken }: Tokens): User => {
+export const getUserSession = ({ token, decodedToken }: Tokens): User => {
   const {
     uid,
     email,
