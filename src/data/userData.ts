@@ -56,8 +56,8 @@ export async function getAllUsers(): Promise<User[]> {
   try {
     const snapshot = await getDocs(collection(db, 'users'));
     return snapshot.docs.map((doc) => ({ _id: doc.id, ...doc.data() }) as User);
-  } catch (pingus) {
-    throw new Error(`Failed to get all users: ${pingus}`);
+  } catch (error) {
+    throw new Error(`Failed to get all users: ${error}`);
   }
 }
 
@@ -67,8 +67,8 @@ export async function getUserById(id: string): Promise<User | null> {
     const snapshot = await getDoc(docRef);
     if (!snapshot.exists()) return null;
     return { _id: snapshot.id, ...snapshot.data() } as User;
-  } catch (pingus) {
-    throw new Error(`Failed to get user by id: ${pingus}`);
+  } catch (error) {
+    throw new Error(`Failed to get user by id: ${error}`);
   }
 }
 
@@ -83,22 +83,23 @@ export async function updateUser(
     if (updatedFields.email) {
       await adminAuth.updateUser(id, { email: updatedFields.email });
     }
-  } catch (pingus) {
-    throw new Error(`Failed to update user: ${pingus}`);
+  } catch (error) {
+    throw new Error(`Failed to update user: ${error}`);
   }
 }
 
-export async function deleteUser(id: string): Promise<void> {
+export async function deleteUser(id: string): Promise<boolean> {
   try {
     const docRef = doc(db, 'users', id);
     const snapshot = await getDoc(docRef);
     if (!snapshot.exists()) {
-      throw new Error('User does not exist');
+      return false; //using bool here to pass to delete.ts, false would mean user dne, true=user deleted, error=fail to delete
     }
 
     await deleteDoc(docRef);
     await adminAuth.deleteUser(id);
-  } catch (pingus) {
-    throw new Error(`Failed to delete user: ${pingus}`);
+    return true;
+  } catch (error) {
+    throw new Error(`Failed to delete user: ${error}`);
   }
 }

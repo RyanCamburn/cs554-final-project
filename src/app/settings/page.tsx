@@ -43,6 +43,7 @@ export default function ProfilePage() {
   const { user } = useAuth();
   const [currentUser, setCurrentUser] = useState<FormValues | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -50,8 +51,8 @@ export default function ProfilePage() {
       lastName: '',
       email: '',
       phoneNumber: '',
-      gender: 'Male',
-      industry: 'Technology',
+      gender: '',
+      industry: '',
     },
     validate: {
       firstName: isNotEmpty('First name must not be empty'),
