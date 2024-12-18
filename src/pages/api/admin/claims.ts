@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { updateUser } from '@/data/userData';
 import { adminAuth } from '@/firebase-admin';
 import getUIDandRole from '@/data/serverAuth';
 
@@ -43,9 +44,10 @@ export default async function handler(
 
   try {
     await adminAuth.setCustomUserClaims(uid, claims);
+    await updateUser(uid, { role: claims.role });
     return res.status(201).json({ message: 'User Claims Set Successfully' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to create user' });
+    res.status(500).json({ error: 'Failed to set claims' });
   }
 }

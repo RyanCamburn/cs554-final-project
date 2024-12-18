@@ -2,6 +2,7 @@
 
 import { isNotEmpty, useForm } from '@mantine/form';
 import { Button, TextInput } from '@mantine/core';
+import ClaimsForm from '@/components/ClaimsForm';
 
 export default function AdminPage() {
   const deleteUserForm = useForm({
@@ -49,6 +50,7 @@ export default function AdminPage() {
           Delete User
         </Button>
       </form>
+      <ClaimsForm />
     </div>
   );
 }
