@@ -13,9 +13,9 @@ export const links = [
   { link: '/directory', label: 'Directory' },
   { link: '/profile', label: 'Profile' },
   { link: '/announcements', label: 'Announcements' },
+  { link: '/forum', label: 'Forum' },
 ];
 
-// reference: https://ui.mantine.dev/category/headers/#header-simple
 function Navbar() {
   const pathname = usePathname();
   const [opened, { toggle }] = useDisclosure(false);
@@ -91,6 +91,31 @@ function Navbar() {
                   {link.label}
                 </Link>
               ))}
+              {user?.customClaims?.role === 'admin' && (
+                <Link
+                  href={'/admin'}
+                  className={`block px-3 py-2 rounded-md transition-colors ${
+                    pathname === '/admin'
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                  onClick={() => toggle()}
+                >
+                  Admin
+                </Link>
+              )}
+              <Link
+                href={'/settings'}
+                className={`block px-3 py-2 rounded-md transition-colors ${
+                  pathname === '/settings'
+                    ? 'bg-blue-50 text-blue-700'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+                onClick={() => toggle()}
+              >
+                <GearIcon className="w-6 h-6" />
+              </Link>
+              <LogoutButton />
             </div>
           </Paper>
         )}
