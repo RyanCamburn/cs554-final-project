@@ -1,17 +1,25 @@
-import { Handle, Position } from '@xyflow/react';
+import { Group, Text } from '@mantine/core';
+import { User } from '@/data/userData';
 import Avvvatars from 'avvvatars-react';
 
-// Attemp to render userNode
+interface UserNodeProps {
+  user: User;
+}
 
-export default function UserNode({ data = { _id: 'asdfasd ' } }) {
+export default function UserNode({ user }: UserNodeProps) {
+  if (!user) {
+    return null;
+  }
+
   return (
-    <>
-      <Handle type="target" position={Position.Top} />
-      <div className="node-content">
-        <Avvvatars value={data._id} />
-        <h1>{data._id}</h1>
+    <Group gap="sm">
+      <div className="shadow-xl rounded-full">
+        <Avvvatars size={40} style="shape" value={user._id || 'default'} />
       </div>
-      <Handle type="source" position={Position.Bottom} id="a" />
-    </>
+      <div>
+        <Text fw={500}>{`${user.firstName} ${user.lastName}`}</Text>
+        <Text c="dimmed">{user.email}</Text>
+      </div>
+    </Group>
   );
 }

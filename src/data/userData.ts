@@ -22,7 +22,7 @@ export interface User {
   industry?: string;
   jobTitle?: string;
   company?: string;
-  assignees?: string[];
+  groupMembers?: string[];
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
