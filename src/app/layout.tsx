@@ -4,9 +4,13 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import './globals.css';
 import { ColorSchemeScript, MantineProvider } from '@mantine/core';
-import ProtectedLayout from '@/components/ProtectedLayout';
 import { Notifications } from '@mantine/notifications';
-import '@mantine/notifications/styles.css';
+import { AuthProvider } from '@/sessions/AuthProvider';
+import { getUserSession } from '@/sessions/getUserSession';
+import { getTokens } from 'next-firebase-auth-edge';
+import { cookies } from 'next/headers';
+import { serverConfig } from '@/auth-config';
+import ProtectedLayout from '@/components/ProtectedLayout';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -24,11 +28,19 @@ export const metadata: Metadata = {
   description: 'Find your perfect mentor match',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const tokens = await getTokens(await cookies(), {
+    apiKey: process.env.NEXT_PUBLIC_API_KEY!,
+    ...serverConfig,
+  });
+
+  // Create user session based on the tokens and pass into the Context API
+  const user = tokens ? getUserSession(tokens) : null;
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -37,10 +49,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <MantineProvider>
-          <Notifications />
-          <ProtectedLayout>{children}</ProtectedLayout>
-        </MantineProvider>
+        <AuthProvider user={user}>
+          <MantineProvider>
+            <Notifications />
+            <ProtectedLayout>{children}</ProtectedLayout>
+          </MantineProvider>
+        </AuthProvider>
       </body>
     </html>
   );
