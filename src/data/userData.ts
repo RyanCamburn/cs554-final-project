@@ -96,10 +96,8 @@ export async function updateUser(
 
 export async function deleteUser(id: string): Promise<string> {
   try {
-    console.log("im here")
     const docRef = doc(db, 'users', id);
     const snapshot = await getDoc(docRef);
-    console.log(snapshot);
     if (!snapshot.exists()) {
       return 'dne';
     }
