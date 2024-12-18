@@ -11,7 +11,7 @@ export default async function handler(
   }
 
   let uid: string;
-  let role: string;
+  let role: string; // admin, mentor, mentee
 
   try {
     const data = await getUIDandRole(req);

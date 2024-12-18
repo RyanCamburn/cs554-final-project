@@ -15,7 +15,7 @@ import { logError } from '../util';
 
 export interface User {
   _id: string;
-  role: string;
+  role: 'admin' | 'mentor' | 'mentee';
   firstName: string;
   lastName: string;
   email: string;

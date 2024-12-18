@@ -1,6 +1,7 @@
 import { NextApiRequest } from 'next';
 import { getApiRequestTokens } from 'next-firebase-auth-edge';
 import { serverConfig, clientConfig } from '@/auth-config';
+import type { User } from './userData';
 
 // This function should be used in each API route that requires authentication
 
@@ -25,6 +26,6 @@ export default async function getUIDandRole(req: NextApiRequest) {
   }
 
   const uid: string = decodedToken.uid;
-  const role: string = decodedToken.role as string; // 'role' is a Firebase custom claim
+  const role: User['role'] = decodedToken.role as User['role']; // 'role' is a Firebase custom claim
   return { uid, role };
 }
