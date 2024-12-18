@@ -9,7 +9,6 @@ import LogoutButton from './LogoutButton';
 import { useAuth } from '@/sessions/AuthContext';
 
 export const links = [
-  { link: '/about', label: 'About' },
   { link: '/events', label: 'Events' },
   { link: '/directory', label: 'Directory' },
   { link: '/profile', label: 'Profile' },

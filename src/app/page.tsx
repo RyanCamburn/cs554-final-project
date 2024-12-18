@@ -1,5 +1,7 @@
 'use client';
 
+'use client';
+
 import { Title, Text, Button, Group } from '@mantine/core';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

@@ -151,6 +151,63 @@ export default function Register() {
           <div className="mb-4">
             <TextInput
               withAsterisk
+              label="First Name"
+              placeholder="John"
+              {...registrationForm.getInputProps('firstName')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <TextInput
+              withAsterisk
+              label="Last Name"
+              placeholder="Smith"
+              {...registrationForm.getInputProps('lastName')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <Select
+              withAsterisk
+              label="Gender"
+              placeholder="Male"
+              data={[
+                { value: 'male', label: 'Male' },
+                { value: 'female', label: 'Female' },
+                { value: 'non-binary', label: 'Non-binary' },
+              ]}
+              {...registrationForm.getInputProps('gender')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <Select
+              withAsterisk
+              label="Role"
+              placeholder="Mentor"
+              data={[
+                { value: 'mentor', label: 'Mentor' },
+                { value: 'mentee', label: 'Mentee' },
+              ]}
+              {...registrationForm.getInputProps('role')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <TextInput
+              withAsterisk
               label="Email"
               placeholder="jsmith@gmail.com"
               {...registrationForm.getInputProps('email')}
