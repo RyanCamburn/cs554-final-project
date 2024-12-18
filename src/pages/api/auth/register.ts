@@ -3,13 +3,14 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { createUserWithUid } from '@/data/userData';
 import { adminAuth } from '@/firebase-admin';
 import { auth } from '@/firebase';
+import type { User } from '@/data/userData';
 
 export interface UserRegisterFormValues {
   firstName: string;
   lastName: string;
   email: string;
   gender: string;
-  role: string;
+  role: User['role'];
   password: string;
 }
 
