@@ -17,7 +17,6 @@ export default async function handler(
   }
 
   const { decodedToken } = tokens;
-  console.log('decodedToken', decodedToken);
 
   // Verify the token and extract uid and role
   let uid: string;
@@ -27,8 +26,7 @@ export default async function handler(
     uid = decodedToken.uid;
     role = decodedToken.role as string;
   } catch (error) {
-    console.error('Token verification failed:', error);
-    return res.status(401).json({ error: 'Invalid or expired token' });
+    return res.status(401).json({ error: error });
   }
 
   const { id } = req.body;
@@ -39,9 +37,6 @@ export default async function handler(
 
   // Authorization: Check if the requester is deleting their own account or is an admin
   if (uid !== id && role !== 'admin') {
-    console.log('uid', uid);
-    console.log('id', id);
-    console.log('role', role);
     return res.status(403).json({
       error: 'Forbidden: You do not have permission to perform this action.',
     });
