@@ -260,18 +260,23 @@ export default function AnnouncementsPage() {
             )}
             <Text size="sm">{announcement.message}</Text>
             {user?.customClaims?.role === 'admin' && (
-              <Button
-                variant="light"
-                color="blue"
-                mt="md"
-                onClick={() => openEditModal(announcement)}
-              >
-                Edit
-              </Button>
+              <Card>
+                <Button
+                  variant="light"
+                  color="blue"
+                  mt="md"
+                  onClick={() => openEditModal(announcement)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  color="red"
+                  onClick={() => handleDelete(announcement.id)}
+                >
+                  Delete
+                </Button>
+              </Card>
             )}
-            <Button color="red" onClick={() => handleDelete(announcement.id)}>
-              Delete
-            </Button>
           </Card>
         ))}
 
