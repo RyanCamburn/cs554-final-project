@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  Timestamp,
   doc,
   getDoc,
   getDocs,
@@ -31,8 +32,8 @@ export async function createAnnouncement(
 
   const newAnnouncement = {
     ...announcement,
-    createdAt: new Date().toISOString,
-    updatedAt: new Date().toISOString,
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
   };
   try {
     const docRef = await addDoc(
@@ -78,7 +79,7 @@ export async function updateAnnouncement(
   }
   try {
     const docRef = doc(db, 'announcements', id);
-    await updateDoc(docRef, { ...updatedFields, updatedAt: new Date() });
+    await updateDoc(docRef, { ...updatedFields, updatedAt: Timestamp.now() });
   } catch (error) {
     throw new Error(`Failed to update announcement: ${error}`);
   }
