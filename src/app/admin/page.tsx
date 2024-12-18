@@ -2,11 +2,8 @@
 
 import { isNotEmpty, useForm } from '@mantine/form';
 import { Button, TextInput } from '@mantine/core';
-import { useAuth } from '@/sessions/AuthContext';
 
 export default function AdminPage() {
-  const { user } = useAuth();
-
   const deleteUserForm = useForm({
     initialValues: {
       id: '',
@@ -16,24 +13,8 @@ export default function AdminPage() {
     },
   });
 
-  const handleDelete = async (values: { id: string }) => {
-    const response = await fetch('/api/users/delete', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${user?.token}`,
-      },
-      body: JSON.stringify(values),
-    });
-
-    if (response.ok) {
-      console.log('User deleted successfully');
-    } else {
-      console.error('Failed to delete user');
-    }
-  };
-
   const handleDeleteCookie = async (values: { id: string }) => {
+    // This will send a request with an http-only JWT cookie which is used to verify if the user is allowed to delete the user
     const response = await fetch('/api/users/delete', {
       method: 'DELETE',
       headers: {
