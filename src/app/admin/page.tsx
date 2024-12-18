@@ -14,8 +14,8 @@ import {
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-
 import { useAuth } from '@/sessions/AuthContext';
+import '@mantine/dates/styles.css';
 
 type AnnouncementType = 'info' | 'warning' | 'error';
 
