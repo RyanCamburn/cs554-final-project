@@ -34,7 +34,7 @@ export default async function handler(
       error: 'Forbidden: You do not have permission to perform this action.',
     });
   }
-  
+
   try {
     const userDeleted = await deleteUser(id);
     if (!userDeleted) {
