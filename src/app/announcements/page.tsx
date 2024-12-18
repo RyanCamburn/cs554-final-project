@@ -15,7 +15,7 @@ import {
   Title,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { useForm } from '@mantine/form';
+import { useForm, isNotEmpty } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { useAuth } from '@/sessions/AuthContext';
 
@@ -47,10 +47,16 @@ export default function AnnouncementsPage() {
       active: true,
     },
     validate: {
-      type: (value) => (value ? null : 'Type is required'),
-      message: (value) => (value ? null : 'Message is required'),
-      scheduleDate: (value) => (value ? null : 'Schedule date is required'),
-      expirationDate: (value) => (value ? null : 'Expiration date is required'),
+      type: isNotEmpty('Type is required'),
+      message: isNotEmpty('Message is required'),
+      scheduleDate: isNotEmpty('Schedule date is required'),
+      expirationDate: (expirationDate, values) => {
+        if (!expirationDate) return 'Expiration date is required';
+        if (values.scheduleDate && expirationDate < values.scheduleDate) {
+          return 'Expiration date cannot be before the schedule date.';
+        }
+        return null;
+      },
     },
   });
 
