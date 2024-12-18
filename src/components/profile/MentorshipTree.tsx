@@ -58,7 +58,7 @@ export default function MentorshipTree({
   if (!groupMembers || groupMembers.length === 0) {
     return (
       <Paper shadow="sm" className="p-8 text-center">
-        No mentees or mentor to share.
+        No mentorship group to share yet
       </Paper>
     );
   }
