@@ -27,6 +27,7 @@ export default function ClaimsForm() {
     fetchUser();
   }, []);
 
+  // Since user data is constrained to the Select Component minimal validaiton is needed
   const claimForm: UseFormReturnType<ClaimFormValues> = useForm({
     initialValues: {
       uid: '',
@@ -71,8 +72,14 @@ export default function ClaimsForm() {
         label="User"
         placeholder="Select a user"
         required
+        searchable
         {...claimForm.getInputProps('uid')}
-        data={users.filter(user => user._id).map((user) => ({ value: user._id as string, label: `${user.firstName} ${user.lastName} (${user.role})` }))}
+        data={users
+          .filter((user) => user._id)
+          .map((user) => ({
+            value: user._id as string,
+            label: `${user.firstName} ${user.lastName} (${user.role})`, // i.e "John Smith (mentor)"
+          }))}
       />
       <Select
         label="Role"
