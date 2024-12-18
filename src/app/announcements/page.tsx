@@ -20,12 +20,19 @@ import { useDisclosure } from '@mantine/hooks';
 import { useAuth } from '@/sessions/AuthContext';
 
 interface Announcement {
-  id: string;
+  _id: string;
   type: 'info' | 'warning' | 'error';
   message: string;
   scheduleDate: Date;
   expirationDate: Date;
   active: boolean;
+}
+
+// Firestore does not return JavaScript Date objects and instead returns a timestamp object
+// This helper function converts a Firestore timestamp object to a JavaScript Date object
+function timestampToDate(timestamp: { seconds: number; nanoseconds: number }) {
+  const milliseconds = timestamp.seconds * 1000 + timestamp.nanoseconds / 1e6;
+  return new Date(milliseconds);
 }
 
 export default function AnnouncementsPage() {
@@ -66,13 +73,12 @@ export default function AnnouncementsPage() {
         const response = await fetch('/api/announcements');
         const data = await response.json();
 
-        const normalizedData = data.map((announcement: Announcement) => ({
+        const normalizedData = data.map((announcement: any) => ({
           ...announcement,
-          id: announcement._id, // Normalize `_id` to `id`
-          scheduleDate: new Date(announcement.scheduleDate),
-          expirationDate: new Date(announcement.expirationDate),
-          active:
-            announcement.active === true || announcement.active === 'true', // Convert string to boolean
+          id: announcement._id,
+          scheduleDate: timestampToDate(announcement.scheduleDate),
+          expirationDate: timestampToDate(announcement.expirationDate),
+          active: announcement.active === true,
         }));
 
         setAnnouncements(normalizedData);
@@ -98,18 +104,18 @@ export default function AnnouncementsPage() {
 
   const handleEditSubmit = async (values: Announcement) => {
     try {
-      if (!values.id) {
+      if (!values._id) {
         throw new Error('Announcement ID is required.');
       }
 
       // Ensure `active` is a boolean before sending to the backend
       const payload = {
-        id: values.id,
+        id: values._id,
         type: values.type,
         message: values.message,
         scheduleDate: values.scheduleDate,
         expirationDate: values.expirationDate,
-        active: values.active === true || values.active === 'true', // Convert to boolean
+        active: values.active === true, // Convert to boolean
       };
 
       const response = await fetch('/api/announcements/update', {
@@ -133,8 +139,7 @@ export default function AnnouncementsPage() {
           id: announcement._id, // Normalize `_id` to `id`
           scheduleDate: new Date(announcement.scheduleDate),
           expirationDate: new Date(announcement.expirationDate),
-          active:
-            announcement.active === true || announcement.active === 'true', // Convert string to boolean
+          active: announcement.active === true, // Convert string to boolean
         })),
       );
 
@@ -166,10 +171,9 @@ export default function AnnouncementsPage() {
         updatedAnnouncements.map((announcement: Announcement) => ({
           ...announcement,
           id: announcement._id, // Normalize `_id` to `id`
-          scheduleDate: new Date(announcement.scheduleDate),
-          expirationDate: new Date(announcement.expirationDate),
-          active:
-            announcement.active === true || announcement.active === 'true', // Convert string to boolean
+          scheduleDate: announcement.scheduleDate,
+          expirationDate: announcement.expirationDate,
+          active: announcement.active === true, // Convert string to boolean
         })),
       );
 
@@ -231,7 +235,7 @@ export default function AnnouncementsPage() {
         </Center>
         {filteredAnnouncements.map((announcement) => (
           <Card
-            key={announcement.id}
+            key={announcement._id}
             shadow="sm"
             p="lg"
             radius="md"
@@ -250,32 +254,33 @@ export default function AnnouncementsPage() {
               <div>
                 <Text size="sm" color="dimmed" mb="sm">
                   <strong>Schedule Date:</strong>{' '}
-                  {announcement.scheduleDate.toLocaleDateString()}
+                  {announcement.scheduleDate.toISOString()}
                 </Text>
                 <Text size="sm" color="dimmed" mb="sm">
                   <strong>Expiration Date:</strong>{' '}
-                  {announcement.expirationDate.toLocaleDateString()}
+                  {announcement.expirationDate.toISOString()}
                 </Text>
               </div>
             )}
-            <Text size="sm">{announcement.message}</Text>
+            <div className="p-4 rounded-lg bg-slate-200">
+              <Text size="sm">{announcement.message}</Text>
+            </div>
             {user?.customClaims?.role === 'admin' && (
-              <Card>
+              <div className="flex justify-start space-x-4 mt-4">
                 <Button
                   variant="light"
                   color="blue"
-                  mt="md"
                   onClick={() => openEditModal(announcement)}
                 >
                   Edit
                 </Button>
                 <Button
                   color="red"
-                  onClick={() => handleDelete(announcement.id)}
+                  onClick={() => handleDelete(announcement._id)}
                 >
                   Delete
                 </Button>
-              </Card>
+              </div>
             )}
           </Card>
         ))}

@@ -31,8 +31,8 @@ export async function createAnnouncement(
 
   const newAnnouncement = {
     ...announcement,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
   try {
     const docRef = await addDoc(

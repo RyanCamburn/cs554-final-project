@@ -39,9 +39,9 @@ export default function MentorshipTree({
       }
 
       const mentor: User | undefined =
-        user.role === 'mentor'
+        user.role === 'mentor' || user.role === 'admin'
           ? user
-          : userPoolData.find((a) => a.role === 'mentor');
+          : userPoolData.find((a) => a.role === 'mentor' || a.role === 'admin');
       const mentees = userPoolData.filter((a) => a.role === 'mentee');
 
       setMentor(mentor);

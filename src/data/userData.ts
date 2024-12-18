@@ -13,8 +13,8 @@ import { db } from '../firebase';
 import { adminAuth } from '../firebase-admin';
 
 export interface User {
-  _id?: string;
-  role: string;
+  _id: string;
+  role: 'admin' | 'mentor' | 'mentee';
   firstName: string;
   lastName: string;
   email: string;
