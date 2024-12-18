@@ -167,15 +167,15 @@ export default function AnnouncementsPage() {
       const updatedAnnouncementsResponse = await fetch('/api/announcements');
       const updatedAnnouncements = await updatedAnnouncementsResponse.json();
 
-      setAnnouncements(
-        updatedAnnouncements.map((announcement: Announcement) => ({
-          ...announcement,
-          id: announcement._id, // Normalize `_id` to `id`
-          scheduleDate: announcement.scheduleDate,
-          expirationDate: announcement.expirationDate,
-          active: announcement.active === true, // Convert string to boolean
-        })),
-      );
+      const normalizedData = updatedAnnouncements.map((announcement: any) => ({
+        ...announcement,
+        id: announcement._id,
+        scheduleDate: timestampToDate(announcement.scheduleDate),
+        expirationDate: timestampToDate(announcement.expirationDate),
+        active: announcement.active === true,
+      }));
+
+      setAnnouncements(normalizedData);
 
       closeModal();
     } catch (err) {

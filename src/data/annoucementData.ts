@@ -81,7 +81,12 @@ export async function updateAnnouncement(
     let { scheduleDate, expirationDate, ...otherFields } = updatedFields;
     if (scheduleDate) scheduleDate = new Date(scheduleDate);
     if (expirationDate) expirationDate = new Date(expirationDate);
-    await updateDoc(docRef, { ...otherFields, scheduleDate, expirationDate, updatedAt: new Date() });
+    await updateDoc(docRef, {
+      ...otherFields,
+      scheduleDate,
+      expirationDate,
+      updatedAt: new Date(),
+    });
   } catch (error) {
     throw new Error(`Failed to update announcement: ${error}`);
   }
