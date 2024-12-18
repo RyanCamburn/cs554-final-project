@@ -78,7 +78,10 @@ export async function updateAnnouncement(
   }
   try {
     const docRef = doc(db, 'announcements', id);
-    await updateDoc(docRef, { ...updatedFields, updatedAt: new Date() });
+    let { scheduleDate, expirationDate, ...otherFields } = updatedFields;
+    if (scheduleDate) scheduleDate = new Date(scheduleDate);
+    if (expirationDate) expirationDate = new Date(expirationDate);
+    await updateDoc(docRef, { ...otherFields, scheduleDate, expirationDate, updatedAt: new Date() });
   } catch (error) {
     throw new Error(`Failed to update announcement: ${error}`);
   }
