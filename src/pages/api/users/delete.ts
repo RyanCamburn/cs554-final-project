@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getApiRequestTokens } from 'next-firebase-auth-edge';
 import { deleteUser } from '@/data/userData';
-import { serverConfig, clientConfig } from '@/auth-config';
+import getUIDandRole from '@/data/serverAuth';
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,26 +10,16 @@ export default async function handler(
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const tokens = await getApiRequestTokens(req, {
-    ...serverConfig,
-    apiKey: clientConfig.apiKey,
-  });
-
-  if (!tokens) {
-    return res.status(401).json({ error: 'Not authorized' });
-  }
-
-  const { decodedToken } = tokens;
-
-  // Verify the token and extract uid and role
   let uid: string;
-  let role: string; // Assuming 'role' is a custom claim
+  let role: string;
 
   try {
-    uid = decodedToken.uid;
-    role = decodedToken.role as string;
+    const data = await getUIDandRole(req);
+    uid = data.uid;
+    role = data.role;
   } catch (error) {
-    return res.status(401).json({ error: error });
+    console.error(error);
+    return res.status(401).json({ error: 'Not authorized' });
   }
 
   const { id } = req.body;
