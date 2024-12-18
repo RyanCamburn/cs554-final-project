@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getAllUsers } from '@/data/userData';
+import { redisClient } from '@/cache';
 
 export default async function handler(
   req: NextApiRequest,
