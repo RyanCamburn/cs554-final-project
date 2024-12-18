@@ -100,7 +100,10 @@ export default function ForumPage() {
   }, [industry]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
   }, [messages]);
 
   const handleSendMessage = async () => {
@@ -171,7 +174,7 @@ export default function ForumPage() {
 
   return (
     <div className="min-h-screen p-16 bg-gray-900 flex flex-col">
-      <Container size="md" className="flex-grow">
+      <Container size="md" className="flex-grow min-h-screen">
         <Paper
           shadow="sm"
           radius="md"
