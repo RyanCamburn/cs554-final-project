@@ -3,6 +3,7 @@ import {
   authMiddleware,
   redirectToHome,
   redirectToLogin,
+  redirectToPath,
 } from 'next-firebase-auth-edge';
 import { clientConfig, serverConfig } from './auth-config';
 
@@ -38,6 +39,11 @@ export async function middleware(request: NextRequest) {
         decodedToken.role !== 'admin'
       ) {
         return redirectToHome(request);
+      }
+
+      // User should be redirected to their profile page never just /public route
+      if (request.nextUrl.pathname === '/profile') {
+        return redirectToPath(request, `/profile/${decodedToken.uid}`);
       }
 
       return NextResponse.next({
