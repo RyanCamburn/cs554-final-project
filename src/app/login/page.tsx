@@ -14,7 +14,6 @@ interface LoginFormValues {
 export default function Login() {
   const [error, setError] = useState('');
   const router = useRouter();
-
   const loginForm = useForm({
     initialValues: {
       email: '',

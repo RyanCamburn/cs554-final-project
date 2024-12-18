@@ -3,7 +3,6 @@ import { createAnnouncement, type Announcement } from '@/data/annoucementData';
 import type { UserRegisterFormValues } from './auth/register';
 import { faker } from '@faker-js/faker';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Timestamp } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { createUserWithUid } from '@/data/userData';
 import { auth } from '@/firebase';
@@ -86,10 +85,8 @@ const seed = async () => {
   const announcement: Omit<Announcement, '_id' | 'createdAt' | 'updatedAt'> = {
     type: 'info',
     message: 'New Announcement!',
-    scheduleDate: Timestamp.fromDate(new Date()),
-    expirationDate: Timestamp.fromDate(
-      new Date(new Date().getTime() + MS_IN_DAY * 2),
-    ), // +2 day
+    scheduleDate: new Date().toISOString(), // Convert to ISO string
+    expirationDate: new Date(Date.now() + MS_IN_DAY * 2).toISOString(), // +2 days as ISO string
     active: true,
   };
 

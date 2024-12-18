@@ -2,8 +2,16 @@
 
 import { Title, Text, Button, Group } from '@mantine/core';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function Home() {
+  const router = useRouter();
+  useEffect(() => {
+    // Clears the Routing Cache, so admin dashboard appers for the users with the right permissions
+    router.refresh();
+  }, [router]);
+
   return (
     <div className="min-h-screen p-16">
       {/* Hero Section */}
