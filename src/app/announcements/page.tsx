@@ -269,7 +269,10 @@ export default function AnnouncementsPage() {
                 >
                   Edit
                 </Button>
-                <Button color="red" onClick={() => handleDelete(announcement.id)}>
+                <Button
+                  color="red"
+                  onClick={() => handleDelete(announcement.id)}
+                >
                   Delete
                 </Button>
               </Card>
