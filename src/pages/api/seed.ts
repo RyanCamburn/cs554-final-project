@@ -4,18 +4,32 @@ import type { UserRegisterFormValues } from './auth/register';
 import { faker } from '@faker-js/faker';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { createUserWithUid } from '@/data/userData';
+import { type User, createUserWithUid, updateUser } from '@/data/userData';
 import { auth } from '@/firebase';
 import { adminAuth } from '@/firebase-admin';
 import { logError } from '@/util';
+import { INDUSTRIES } from '@/app/settings/page';
 
-const USER_AMOUNT = 100;
+type CompleteUser = UserRegisterFormValues &
+  Pick<User, 'industry' | 'jobTitle' | 'company'>;
+
+const MENTOR_AMOUNT = 100;
+const MENTEE_AMOUNT = 200;
 const MS_IN_DAY = 86400000;
 
-// This function is server-side implementation of intakeUser function from register.ts
-const intakeUser = async (user: UserRegisterFormValues) => {
+const intakeUser = async (user: CompleteUser) => {
   try {
-    const { firstName, lastName, email, gender, role, password } = user;
+    const {
+      firstName,
+      lastName,
+      email,
+      gender,
+      role,
+      password,
+      industry,
+      jobTitle,
+      company,
+    } = user;
     // 1. Create a user in firebase auth
     const authUserObject = await createUserWithEmailAndPassword(
       auth,
@@ -24,7 +38,10 @@ const intakeUser = async (user: UserRegisterFormValues) => {
     );
     // 2. Create a user document in firestore with the same uid
     const uid = authUserObject.user.uid;
-    await createUserWithUid({ firstName, lastName, email, gender, role }, uid);
+    await createUserWithUid(
+      { firstName, lastName, email, gender, role, industry, jobTitle, company },
+      uid,
+    );
     // 3. Set custom claims - this might be OD
     await adminAuth.setCustomUserClaims(uid, { role });
   } catch (e) {
@@ -34,31 +51,40 @@ const intakeUser = async (user: UserRegisterFormValues) => {
 
 // Seed default users for testing
 const seed = async () => {
-  const mentee: UserRegisterFormValues = {
+  const mentee: CompleteUser = {
     role: 'mentee',
     firstName: 'Mentee',
     lastName: 'Doe',
     email: 'mentee@email.com',
     gender: 'male',
     password: 'Mentee#1',
+    industry: 'Technology',
+    jobTitle: 'Student',
+    company: 'Stevens Institute of Technology',
   };
 
-  const mentor: UserRegisterFormValues = {
+  const mentor: CompleteUser = {
     role: 'mentor',
     firstName: 'Mentor',
     lastName: 'Doe',
     email: 'mentor@email.com',
     gender: 'female',
     password: 'Mentor#1',
+    industry: 'Technology',
+    jobTitle: 'Software Engineer',
+    company: 'Google',
   };
 
-  const admin: UserRegisterFormValues = {
+  const admin: CompleteUser = {
     role: 'admin',
     firstName: 'Admin',
     lastName: 'Doe',
     email: 'admin@email.com',
     gender: 'male',
     password: 'Admin#01',
+    industry: 'Technology',
+    jobTitle: 'Mentorship Admin',
+    company: 'MentorMatch',
   };
 
   try {
@@ -85,8 +111,8 @@ const seed = async () => {
   const announcement: Omit<Announcement, '_id' | 'createdAt' | 'updatedAt'> = {
     type: 'info',
     message: 'New Announcement!',
-    scheduleDate: new Date().toISOString(), // Convert to ISO string
-    expirationDate: new Date(Date.now() + MS_IN_DAY * 2).toISOString(), // +2 days as ISO string
+    scheduleDate: new Date(),
+    expirationDate: new Date(new Date().getTime() + MS_IN_DAY * 2), // +2 day
     active: true,
   };
 
@@ -98,14 +124,20 @@ const seed = async () => {
   }
 };
 
-// Populate the database with random users
-const populate = async (count: number) => {
+// Populate the database with random users with specific role
+const populate = async (count: number, role: User['role']) => {
   for (let i = 0; i < count; i++) {
-    const user: UserRegisterFormValues = {
-      role: faker.helpers.arrayElement(['mentee', 'mentor']),
+    const user: CompleteUser = {
+      role: role,
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       email: faker.internet.email(),
+      industry: faker.helpers.arrayElement(INDUSTRIES),
+      jobTitle: role === 'mentee' ? 'Student' : faker.person.jobTitle(),
+      company:
+        role === 'mentee'
+          ? 'Stevens Institute of Technology'
+          : faker.company.name(),
       gender: faker.person.sex(),
       password: faker.internet.password(),
     };
@@ -117,6 +149,54 @@ const populate = async (count: number) => {
   }
 };
 
+const assignMentorsToMentees = async () => {
+  // Get all mentees and mentors
+  const allUsers = await getAllUsers();
+  const mentees = allUsers.filter((user) => user.role === 'mentee');
+  const mentors = allUsers.filter((user) => user.role === 'mentor');
+
+  // Split all mentees into groups of 2 so there are a total of 2 mentees per mentor
+  const menteeGroups = [];
+  for (let i = 0; i < mentees.length; i += 2) {
+    menteeGroups.push(mentees.slice(i, i + 2));
+  }
+
+  // Assign each group of mentees to a mentor and update groupMembers field
+  for (let i = 0; i < menteeGroups.length || i < mentors.length; i++) {
+    const mentor = mentors[i];
+    const menteeGroup = menteeGroups[i];
+
+    // create list of all ids in group
+    const allGroupMembersIds = menteeGroup.map((mentee) => mentee._id);
+    allGroupMembersIds.push(mentor._id);
+
+    // update mentor and each mentee with groupMembers
+    if (
+      !mentor._id ||
+      !menteeGroup[0]?._id ||
+      !menteeGroup[1]?._id ||
+      !allGroupMembersIds
+    ) {
+      console.log(`Error: missing ids for mentor ${mentor._id} group`);
+      return;
+    }
+
+    // update mentor
+    const mentorGroupMembers = allGroupMembersIds.filter(
+      (id) => id !== mentor._id,
+    );
+    await updateUser(mentor._id, { groupMembers: mentorGroupMembers });
+
+    // update mentees
+    for (const mentee of menteeGroup) {
+      const menteeGroupMembers = allGroupMembersIds.filter(
+        (id) => id !== mentee._id,
+      );
+      await updateUser(mentee._id, { groupMembers: menteeGroupMembers });
+    }
+  }
+};
+
 const main = async () => {
   // check if in developement mode
   if (process.env.NODE_ENV !== 'development') {
@@ -124,7 +204,7 @@ const main = async () => {
   }
 
   const allUsers = await getAllUsers();
-  if (allUsers.length > USER_AMOUNT) {
+  if (allUsers.length > MENTEE_AMOUNT + MENTOR_AMOUNT) {
     throw new Error('🌱 Database already been seeded');
   }
 
@@ -134,9 +214,15 @@ const main = async () => {
   await seed();
   console.log('🌱 Completed Seeding Dev Users');
 
-  // seed random users
-  await populate(USER_AMOUNT);
-  console.log(`🚀 ${USER_AMOUNT} Users Populated`);
+  // seed mentee and mentor users
+  await populate(MENTEE_AMOUNT, 'mentee');
+  console.log(`🚀 ${MENTEE_AMOUNT} Mentees Populated`);
+  await populate(MENTOR_AMOUNT, 'mentor');
+  console.log(`🚀 ${MENTOR_AMOUNT} Mentors Populated`);
+
+  // handle assignees
+  assignMentorsToMentees();
+  console.log('🚀 Assigned Mentors to Mentees');
 
   console.log('\n✅ Seed Complete!\n');
 };

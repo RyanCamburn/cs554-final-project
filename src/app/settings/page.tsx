@@ -18,8 +18,8 @@ import {
 import { IMaskInput } from 'react-imask';
 import { notifications } from '@mantine/notifications';
 
-const GENDERS = ['Male', 'Female', 'Other', 'Prefer not to say'] as const;
-const INDUSTRIES = [
+export const GENDERS = ['Male', 'Female', 'Non-binary'] as const;
+export const INDUSTRIES = [
   'Technology',
   'Healthcare',
   'Finance',

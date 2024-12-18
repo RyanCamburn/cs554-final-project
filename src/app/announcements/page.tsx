@@ -258,13 +258,14 @@ export default function AnnouncementsPage() {
                 </Text>
               </div>
             )}
-            <Text size="sm">{announcement.message}</Text>
+            <div className="p-4 rounded-lg bg-slate-200">
+              <Text size="sm">{announcement.message}</Text>
+            </div>
             {user?.customClaims?.role === 'admin' && (
-              <Card>
+              <div className="flex justify-start space-x-4 mt-4">
                 <Button
                   variant="light"
                   color="blue"
-                  mt="md"
                   onClick={() => openEditModal(announcement)}
                 >
                   Edit
@@ -275,7 +276,7 @@ export default function AnnouncementsPage() {
                 >
                   Delete
                 </Button>
-              </Card>
+              </div>
             )}
           </Card>
         ))}
