@@ -1,11 +1,12 @@
 'use client';
 
 import { Title, Group, Badge } from '@mantine/core';
+import type { User } from '@/data/userData';
 
 interface BasicInfoProps {
   firstName: string;
   lastName: string;
-  role: string;
+  role: User['role'];
   industry?: string;
 }
 

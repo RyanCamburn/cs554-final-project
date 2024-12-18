@@ -65,6 +65,13 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+### Running seed file
+
+To seed development firestore and auth (make sure they are running first of course), run GET request to the following endpoint `/api/seed` using your browser or other tool of choice (`http://localhost:3000/api/seed`)
+
+- should see `Database seeded successfully` message and corresponding logs in console once it works
+- If you'd like to reset database, manually go to firebase emulators and 'Clear all data' for the Authentication and Firestore
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
