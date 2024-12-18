@@ -1,21 +1,54 @@
 'use client';
 
-// TODO: Only let admins access this page
-import { useAuth } from '@/sessions/AuthContext';
+import { isNotEmpty, useForm } from '@mantine/form';
+import { Button, TextInput } from '@mantine/core';
 
 export default function AdminPage() {
-  const { user } = useAuth();
-  const isAdmin = user && user.customClaims.role === 'admin';
-  if (!user || !isAdmin) {
-    return (
-      <div>
-        <h1 className="text-white">You are not an admin</h1>
-      </div>
-    );
-  }
+  const deleteUserForm = useForm({
+    initialValues: {
+      id: '',
+    },
+    validate: {
+      id: isNotEmpty('ID is required'),
+    },
+  });
+
+  const handleDeleteCookie = async (values: { id: string }) => {
+    // This will send a request with an http-only JWT cookie which is used to verify if the user is allowed to delete the user
+    const response = await fetch('/api/users/delete', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(values),
+    });
+
+    if (response.ok) {
+      console.log('User deleted successfully');
+    } else {
+      console.error('Failed to delete user');
+    }
+  };
+
   return (
     <div>
       <h1 className="text-white">Admin Page</h1>
+      <form
+        onSubmit={deleteUserForm.onSubmit((values) =>
+          handleDeleteCookie(values),
+        )}
+      >
+        <TextInput
+          withAsterisk
+          label="User ID"
+          placeholder="Enter user ID"
+          required
+          {...deleteUserForm.getInputProps('id')}
+        />
+        <Button type="submit" color="red">
+          Delete User
+        </Button>
+      </form>
     </div>
   );
 }
