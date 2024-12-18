@@ -3,6 +3,8 @@
 import { Center, Text, Title } from '@mantine/core';
 import { useAuth } from '@/sessions/AuthContext';
 import { CreateAnnouncement } from '@/components/CreateAnnouncement';
+import DeleteUserForm from '@/components/DeleteUserForm';
+import ClaimsForm from '@/components/ClaimsForm';
 
 export default function AdminPage() {
   const { user } = useAuth();
@@ -29,6 +31,8 @@ export default function AdminPage() {
       </Center>
       <Center>
         <CreateAnnouncement />
+        <ClaimsForm />
+        <DeleteUserForm />
       </Center>
     </div>
   );

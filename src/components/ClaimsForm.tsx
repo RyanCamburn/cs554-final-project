@@ -6,8 +6,8 @@ import { notifications } from '@mantine/notifications';
 
 // This component allows admins to elevate a user's role by setting custom claims
 interface ClaimFormValues {
-  uid: string,
-  role: string,
+  uid: string;
+  role: string;
 }
 
 export default function ClaimsForm() {
@@ -36,18 +36,18 @@ export default function ClaimsForm() {
     validate: {
       uid: isNotEmpty('User ID is required'),
       role: isNotEmpty('Role is required'),
-    }
+    },
   });
 
-  const handleClaimSubmit = async (values: { uid: string, role: string }) => {
+  const handleClaimSubmit = async (values: { uid: string; role: string }) => {
     const response = await fetch('/api/admin/claims', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        "uid": values.uid,
-        "claims": { role: values.role },
+        uid: values.uid,
+        claims: { role: values.role },
       }),
     });
 
@@ -65,9 +65,7 @@ export default function ClaimsForm() {
   };
 
   return (
-    <form onSubmit={claimForm.onSubmit((values) =>
-      handleClaimSubmit(values),
-    )}>
+    <form onSubmit={claimForm.onSubmit((values) => handleClaimSubmit(values))}>
       <Select
         label="User"
         placeholder="Select a user"
@@ -85,12 +83,16 @@ export default function ClaimsForm() {
         label="Role"
         placeholder="Select a role"
         required
-        data={[{ value: 'admin', label: 'Admin' }, { value: 'mentor', label: 'Mentor' }, { value: 'mentee', label: 'Mentee' }]}
+        data={[
+          { value: 'admin', label: 'Admin' },
+          { value: 'mentor', label: 'Mentor' },
+          { value: 'mentee', label: 'Mentee' },
+        ]}
         {...claimForm.getInputProps('role')}
       />
       <Button type="submit" color="blue">
         Set User Claims
       </Button>
     </form>
-  )
+  );
 }
