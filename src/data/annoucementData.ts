@@ -1,7 +1,6 @@
 import {
   addDoc,
   collection,
-  Timestamp,
   doc,
   getDoc,
   getDocs,
@@ -16,10 +15,10 @@ export interface Announcement {
   _id?: string;
   type: AnnouncementType;
   message: string;
-  createdAt?: Timestamp;
-  updatedAt?: Timestamp;
-  scheduleDate: Timestamp;
-  expirationDate: Timestamp;
+  createdAt?: Date;
+  updatedAt?: Date;
+  scheduleDate: Date;
+  expirationDate: Date;
   active: boolean;
 }
 
@@ -32,8 +31,8 @@ export async function createAnnouncement(
 
   const newAnnouncement = {
     ...announcement,
-    createdAt: Timestamp.now(),
-    updatedAt: Timestamp.now(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
   try {
     const docRef = await addDoc(
@@ -79,7 +78,7 @@ export async function updateAnnouncement(
   }
   try {
     const docRef = doc(db, 'announcements', id);
-    await updateDoc(docRef, { ...updatedFields, updatedAt: Timestamp.now() });
+    await updateDoc(docRef, { ...updatedFields, updatedAt: new Date() });
   } catch (error) {
     throw new Error(`Failed to update announcement: ${error}`);
   }
