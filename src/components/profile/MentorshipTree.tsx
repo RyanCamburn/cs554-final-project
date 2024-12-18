@@ -1,135 +1,132 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { Paper } from '@mantine/core';
+import { useState } from 'react';
+import { Paper, Title } from '@mantine/core';
 import { User } from '@/data/userData';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { ArcherContainer, ArcherElement } from 'react-archer';
 import UserNode from './UserNode';
-import { ReactFlow } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
 
-// This file is a WIP implementation of the tree diagram for the mentorship relations
 interface MentorshipTreeProps {
   user: User;
-  assignees?: string[];
+  groupMembers?: string[];
 }
-
-export const initialNodes = [
-  {
-    id: '1',
-    type: 'input',
-    data: { label: 'Mentor' },
-    position: { x: 0, y: 0 },
-  },
-  {
-    id: '2',
-    data: { label: 'Mentee 1' },
-    position: { x: -100, y: 100 },
-  },
-  {
-    id: '3',
-    data: { label: 'Mentee 2' },
-    position: { x: 100, y: 100 },
-  },
-];
-
-export const initialEdges = [
-  { id: 'e12', source: '1', target: '2' },
-  { id: 'e13', source: '1', target: '3' },
-];
 
 export default function MentorshipTree({
   user,
-  assignees,
+  groupMembers,
 }: MentorshipTreeProps) {
-  const [mentees, setMentees] = useState<User[] | null>(null);
+  const [mentor, setMentor] = useState<User | null | undefined>(null);
+  const [mentees, setMentees] = useState<User[]>([]);
   const router = useRouter();
-  const nodeTypes = useMemo(() => ({ userNode: UserNode }), []);
 
   useEffect(() => {
-    if (!assignees) return;
+    if (!groupMembers) return;
 
-    const fetchMentees = async () => {
-      const assigneeData: User[] = await Promise.all(
-        assignees.map(async (id) => {
+    const fetchUsersInPool = async () => {
+      const userPoolData: User[] = await Promise.all(
+        groupMembers.map(async (id: string) => {
           const response = await fetch(`/api/users/${id}`);
           return response.json();
         }),
       );
-      setMentees(assigneeData);
+
+      // Check if user already exists in the pool - edge case this would mean we messed up updating groupMembers
+      const userExists = userPoolData.some((u) => u._id === user._id);
+      if (!userExists) {
+        userPoolData.push(user);
+      }
+
+      const mentor: User | undefined =
+        user.role === 'mentor'
+          ? user
+          : userPoolData.find((a) => a.role === 'mentor');
+      const mentees = userPoolData.filter((a) => a.role === 'mentee');
+
+      setMentor(mentor);
+      setMentees(mentees);
     };
 
-    fetchMentees();
-  }, [assignees]);
+    fetchUsersInPool();
+  }, [groupMembers, user]);
 
-  if (!assignees) {
-    return (
-      <Paper shadow="sm" className="p-8 text-center">
-        No mentees or mentor to share.
-      </Paper>
-    );
-  }
   const handleUserClick = (userId: string) => {
     router.push(`/profile/${userId}`);
   };
 
+  if (!groupMembers || groupMembers.length === 0) {
+    return (
+      <Paper shadow="sm" className="p-8 text-center">
+        No mentorship group to share yet
+      </Paper>
+    );
+  }
+
   return (
-    <div className="p-16 relative">
-      {/* Attempt 1 : Using React Flow */}
-      <div className="h-64 border-2 border-gray-300 rounded-lg">
-        <ReactFlow
-          nodes={initialNodes}
-          edges={initialEdges}
-          fitView
-          nodeTypes={nodeTypes}
-        />
-      </div>
-
-      {/* Attemp 2 : Manually displaying tree-like diagram*/}
-      {/* Mentor Node */}
-      <div className="flex justify-center mb-8">
-        <Paper
-          className={`p-4 cursor-pointer hover:shadow-md transition-shadow ${
-            user._id ? 'border-2 border-blue-500' : ''
-          }`}
-          onClick={() => handleUserClick(user._id || '')}
-        >
-          <div className="flex flex-col items-center gap-2">
-            <div className="text-xs uppercase text-gray-500">Mentor</div>
-            <div className="text-sm font-medium">
-              {user.firstName} {user.lastName}
-            </div>
+    <div className="px-16 pb-16 pt-8 relative">
+      <Title className="text-center pb-8">Mentorship Group</Title>
+      <ArcherContainer strokeColor="red">
+        {/* Mentor Node */}
+        {mentor && (
+          <div className="flex justify-center mb-24">
+            <ArcherElement
+              id="mentor"
+              relations={mentees.map((mentee) => ({
+                targetId: mentee._id || 'mentor_id',
+                targetAnchor: 'top',
+                sourceAnchor: 'bottom',
+                style: {
+                  strokeColor: 'black',
+                  strokeDasharray: 'none',
+                  endShape: {
+                    circle: {
+                      radius: 2,
+                      strokeColor: 'black',
+                      fillColor: 'black',
+                    },
+                  },
+                },
+              }))}
+            >
+              <div
+                className={`p-4 rounded-xl border-2 ${
+                  mentor._id === user._id
+                    ? 'border-blue-300'
+                    : 'border-gray-300 cursor-pointer hover:shadow-md transition-shadow'
+                }`}
+                onClick={() => handleUserClick(mentor._id || '')}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <div className="uppercase text-gray-500">Mentor</div>
+                  <UserNode user={mentor} />
+                </div>
+              </div>
+            </ArcherElement>
           </div>
-        </Paper>
-      </div>
+        )}
 
-      {assignees.length > 0 && (
-        <>
-          {/* Mentees */}
-          <div className="flex justify-center gap-8 mt-8">
-            {mentees &&
-              mentees.map((mentee) => (
-                <Paper
-                  key={mentee._id}
-                  className={`p-4 cursor-pointer hover:shadow-md transition-shadow ${
-                    mentee._id ? 'border-2 border-blue-500' : ''
-                  }`}
-                  onClick={() => handleUserClick(mentee._id || 'Error')}
-                >
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="text-xs uppercase text-gray-500">
-                      Mentee
-                    </div>
-                    <div className="text-sm font-medium">
-                      {mentee.firstName} {mentee.lastName}
-                    </div>
-                  </div>
-                </Paper>
-              ))}
-          </div>
-        </>
-      )}
+        {/* Mentees */}
+        <div className="flex justify-center gap-8 mt-8">
+          {mentees.map((mentee, i) => (
+            <ArcherElement key={mentee._id} id={mentee._id || `mentee_${i}`}>
+              <div
+                className={`p-4 rounded-xl border-2 ${
+                  mentee._id === user._id
+                    ? 'border-blue-300'
+                    : 'border-gray-300 cursor-pointer hover:shadow-md transition-shadow'
+                }`}
+                onClick={() => handleUserClick(mentee._id || '')}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <div className="uppercase text-gray-500">Mentee</div>
+                  <UserNode user={mentee} />
+                </div>
+              </div>
+            </ArcherElement>
+          ))}
+        </div>
+      </ArcherContainer>
     </div>
   );
 }

@@ -20,11 +20,6 @@ export default function UserProfilePage() {
         // Simulated user data
         const response = await fetch(`/api/users/${id}`);
         const userData: User = await response.json();
-        // testing dummy assignees
-        // userData.assignees = [
-        //   'CYbOQJIjckAIqRIcFw1DoWa2aCyJ',
-        //   'E4FT04Mbogk9425ap7pQpq4Rzm80',
-        // ];
         setUser(userData);
       } catch (error) {
         console.error('Error fetching user profile:', error);
@@ -44,7 +39,7 @@ export default function UserProfilePage() {
       <Container size="md">
         <Paper shadow="sm" radius="md" className="overflow-hidden">
           <UserInfoIcon user={user} />
-          <MentorshipTree user={user} assignees={user.assignees} />
+          <MentorshipTree user={user} groupMembers={user.groupMembers} />
         </Paper>
       </Container>
     </div>
