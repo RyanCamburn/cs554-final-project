@@ -28,6 +28,8 @@ interface Announcement {
   active: boolean;
 }
 
+// Firestore does not return JavaScript Date objects and instead returns a timestamp object
+// This helper function converts a Firestore timestamp object to a JavaScript Date object
 function timestampToDate(timestamp: { seconds: number; nanoseconds: number }) {
   const milliseconds = timestamp.seconds * 1000 + timestamp.nanoseconds / 1e6;
   return new Date(milliseconds);
