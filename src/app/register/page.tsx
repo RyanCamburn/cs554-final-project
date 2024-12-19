@@ -18,6 +18,7 @@ import {
   Select,
 } from '@mantine/core';
 import { useRouter } from 'next/navigation';
+import { notifications } from '@mantine/notifications';
 
 interface RegisterFormValues {
   firstName: string;
@@ -27,7 +28,22 @@ interface RegisterFormValues {
   role: string;
   password: string;
   confirmation: string;
+  industry: string;
+  jobTitle?: string;
+  company?: string;
 }
+
+const GENDERS = ['Male', 'Female', 'Non-binary'] as const;
+const INDUSTRIES = [
+  'Technology',
+  'Healthcare',
+  'Finance',
+  'Education',
+  'Consulting',
+  'Manufacturing',
+  'Retail',
+  'Other',
+] as const;
 
 export default function Register() {
   const [error, setError] = useState('');
@@ -42,6 +58,9 @@ export default function Register() {
       role: '',
       password: '',
       confirmation: '',
+      industry: '',
+      jobTitle: '',
+      company: '',
     },
     validate: {
       firstName: isNotEmpty('First Name is required'),
@@ -54,14 +73,25 @@ export default function Register() {
         'Password must be at least 8 characters long and contain 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character',
       ), // Regex Credit: https://uibakery.io/regex-library/password
       confirmation: matchesField('password', "Passwords don't match"),
+      industry: isNotEmpty('Industry is required'),
     },
   });
 
   async function handleRegistration(values: RegisterFormValues) {
     setError('');
     try {
-      const { firstName, lastName, email, gender, role, password } = values;
-      await fetch('/api/auth/register', {
+      const {
+        firstName,
+        lastName,
+        email,
+        gender,
+        role,
+        password,
+        industry,
+        jobTitle,
+        company,
+      } = values;
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -73,9 +103,24 @@ export default function Register() {
           gender,
           role,
           password,
+          industry,
+          jobTitle,
+          company,
         }),
       });
-      router.push('/login');
+
+      if (response.ok) {
+        notifications.show({
+          message: 'Successfully registered',
+          color: 'green',
+        });
+        router.push('/login');
+      } else {
+        notifications.show({
+          message: 'Error registering. Try again.',
+          color: 'red',
+        });
+      }
     } catch (e) {
       setError((e as Error).message);
     }
@@ -120,11 +165,7 @@ export default function Register() {
               withAsterisk
               label="Gender"
               placeholder="Male"
-              data={[
-                { value: 'male', label: 'Male' },
-                { value: 'female', label: 'Female' },
-                { value: 'non-binary', label: 'Non-binary' },
-              ]}
+              data={GENDERS.map((gender) => ({ value: gender, label: gender }))}
               {...registrationForm.getInputProps('gender')}
               classNames={{
                 input: 'custom-form-input',
@@ -235,6 +276,44 @@ export default function Register() {
               label="Confirm Password"
               placeholder="********"
               {...registrationForm.getInputProps('confirmation')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <Select
+              withAsterisk
+              label="Industry"
+              placeholder="Select your industry"
+              data={INDUSTRIES.map((industry) => ({
+                value: industry,
+                label: industry,
+              }))}
+              {...registrationForm.getInputProps('industry')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <TextInput
+              label="Job Title"
+              placeholder="Student"
+              {...registrationForm.getInputProps('jobTitle')}
+              classNames={{
+                input: 'custom-form-input',
+                label: 'custom-form-label',
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <TextInput
+              label="Company"
+              placeholder="Stevens Institute of Technology"
+              {...registrationForm.getInputProps('company')}
               classNames={{
                 input: 'custom-form-input',
                 label: 'custom-form-label',

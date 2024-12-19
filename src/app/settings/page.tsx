@@ -18,8 +18,9 @@ import {
 import { IMaskInput } from 'react-imask';
 import { notifications } from '@mantine/notifications';
 
-const GENDERS = ['Male', 'Female', 'Other', 'Prefer not to say'] as const;
-const INDUSTRIES = [
+
+export const GENDERS = ['Male', 'Female', 'Non-binary'] as const;
+export const INDUSTRIES = [
   'Technology',
   'Healthcare',
   'Finance',
@@ -37,6 +38,8 @@ type FormValues = {
   phoneNumber: string;
   gender: (typeof GENDERS)[number];
   industry: (typeof INDUSTRIES)[number] | '';
+  jobTitle?: string;
+  company?: string;
 };
 
 export default function ProfilePage() {
@@ -53,6 +56,8 @@ export default function ProfilePage() {
       phoneNumber: '',
       gender: '',
       industry: '',
+      jobTitle: '',
+      company: '',
     },
     validate: {
       firstName: isNotEmpty('First name must not be empty'),
@@ -60,7 +65,10 @@ export default function ProfilePage() {
       email: isEmail('Invalid email'),
       phoneNumber: (value) =>
         value.length < 10 ? 'Phone number must have at least 10 digits' : null,
+      gender: isNotEmpty('Gender must not be empty'),
       industry: isNotEmpty('Industry must not be empty'),
+      jobTitle: isNotEmpty('Job title must not be empty'),
+      company: isNotEmpty('Company must not be empty'),
     },
   });
 
@@ -76,12 +84,14 @@ export default function ProfilePage() {
         .then((data) => {
           setCurrentUser(data);
           form.setValues({
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            phoneNumber: data.phoneNumber,
-            gender: data.gender,
-            industry: data.industry,
+            firstName: data.firstName || 'John',
+            lastName: data.lastName || 'Doe',
+            email: data.email || 'example@example.com',
+            phoneNumber: data.phoneNumber || '+1 (000) 000-0000',
+            gender: data.gender || 'Male',
+            industry: data.industry || 'Other',
+            jobTitle: data.jobTitle || 'Student',
+            company: data.company || 'Stevens Institute of Technology',
           });
           setLoading(false);
         })
@@ -95,6 +105,14 @@ export default function ProfilePage() {
   }, [user]);
 
   const handleSubmit = async (values: FormValues) => {
+    if (!form.isValid()) {
+      notifications.show({
+        message: 'Please correct the errors in the form before submitting.',
+        color: 'red',
+      });
+      return;
+    }
+
     try {
       const currentUID = user?.uid || '';
       if (!currentUID) {
@@ -113,6 +131,8 @@ export default function ProfilePage() {
           phoneNumber: values.phoneNumber,
           gender: values.gender,
           industry: values.industry,
+          jobTitle: values.jobTitle,
+          company: values.company,
         }),
       });
       const data = await response.json();
@@ -230,6 +250,20 @@ export default function ProfilePage() {
                     placeholder="Select your industry"
                     {...form.getInputProps('industry')}
                     searchable
+                  />
+                </Grid.Col>
+                <Grid.Col span={{ base: 12, md: 6 }}>
+                  <TextInput
+                    label="Job Title"
+                    placeholder="Student"
+                    {...form.getInputProps('jobTitle')}
+                  />
+                </Grid.Col>
+                <Grid.Col span={{ base: 12, md: 6 }}>
+                  <TextInput
+                    label="Company"
+                    placeholder="Stevens Institute of Technology"
+                    {...form.getInputProps('company')}
                   />
                 </Grid.Col>
               </Grid>

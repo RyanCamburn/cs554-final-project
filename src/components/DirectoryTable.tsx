@@ -17,9 +17,12 @@ import {
   UnstyledButton,
   Pill,
   Button,
+  Pagination,
 } from '@mantine/core';
 import Link from 'next/link';
 import { capitalize } from '@/util';
+
+const ITEMS_PER_PAGE = 20;
 
 // Adjust User Interface so we can search and sort by name too
 interface RowData extends User {
@@ -66,6 +69,10 @@ function filterData(data: User[], search: string) {
   return data.filter((item) =>
     keys(data[0]).some((key) => {
       if (typeof item[key] === 'string') {
+        // This is here cause 'male' is in female so the search results are mixed
+        if (query === 'male') {
+          return item[key].toLowerCase() === query;
+        }
         return item[key].toLowerCase().includes(query);
       }
       return false;
@@ -121,6 +128,7 @@ export default function DirectoryTable({ data }: { data: User[] }) {
   const [sortedData, setSortedData] = useState<User[]>(data);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
@@ -132,12 +140,17 @@ export default function DirectoryTable({ data }: { data: User[] }) {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
+    setCurrentPage(1);
     setSortedData(
       sortData(data, { sortBy, reversed: reverseSortDirection, search: value }),
     );
   };
 
-  const rows = sortedData.map((row) => (
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedData = sortedData.slice(startIndex, endIndex);
+
+  const rows = paginatedData.map((row) => (
     <Table.Tr key={row._id}>
       <Table.Td>{row.firstName + ' ' + row.lastName}</Table.Td>
       <Table.Td>
@@ -223,6 +236,14 @@ export default function DirectoryTable({ data }: { data: User[] }) {
           )}
         </Table.Tbody>
       </Table>
+      <Center>
+        <Pagination
+          total={Math.ceil(sortedData.length / ITEMS_PER_PAGE)}
+          value={currentPage}
+          onChange={setCurrentPage}
+          className="pt-5"
+        />
+      </Center>
     </ScrollArea>
   );
 }

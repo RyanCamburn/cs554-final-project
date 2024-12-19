@@ -24,7 +24,7 @@ export default function UserInfoIcon({ user }: UserInfoIconProps) {
             tt="uppercase"
             className="text-4xl font-semibold text-gray-600 mb-2"
           >
-            {user.role}
+            {user.role === 'admin' ? 'staff' : user.role}
           </Text>
 
           <Text fw={500} className="text-5xl mb-4">

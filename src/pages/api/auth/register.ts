@@ -3,14 +3,18 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { createUserWithUid } from '@/data/userData';
 import { adminAuth } from '@/firebase-admin';
 import { auth } from '@/firebase';
+import type { User } from '@/data/userData';
 
 export interface UserRegisterFormValues {
   firstName: string;
   lastName: string;
   email: string;
   gender: string;
-  role: string;
+  role: User['role'];
   password: string;
+  industry: string;
+  jobTitle?: string;
+  company?: string;
 }
 
 export default async function handler(
@@ -22,17 +26,31 @@ export default async function handler(
   }
 
   try {
-    const { firstName, lastName, email, gender, role, password } =
-      req.body as UserRegisterFormValues;
+    const {
+      firstName,
+      lastName,
+      email,
+      gender,
+      role,
+      password,
+      industry,
+      jobTitle,
+      company,
+    } = req.body as UserRegisterFormValues;
+
     // Create a user in firebase auth
     const authUserObject = await createUserWithEmailAndPassword(
       auth,
       email,
       password,
     );
+
     // Create a user document in firestore with the same uid
     const uid = authUserObject.user.uid;
-    await createUserWithUid({ firstName, lastName, email, gender, role }, uid);
+    await createUserWithUid(
+      { firstName, lastName, email, gender, role, industry, jobTitle, company },
+      uid,
+    );
 
     // Set custom claims - admin accounts should be created in the Firebase console or by another admin, not set in registration
     if (
