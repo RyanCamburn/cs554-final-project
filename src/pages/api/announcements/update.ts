@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { updateAnnouncement } from '@/data/annoucementData';
+import getUIDandRole from '@/data/serverAuth';
+import { RedisClientType } from 'redis';
+import redisClient, { deleteCacheKey } from '@/cache';
 
 export default async function handler(
   req: NextApiRequest,
@@ -7,6 +10,22 @@ export default async function handler(
 ) {
   if (req.method !== 'PUT') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  let role: string;
+
+  try {
+    const data = await getUIDandRole(req);
+    role = data.role;
+  } catch (error) {
+    console.error(error);
+    return res.status(401).json({ error: 'Not authorized' });
+  }
+
+  if (role !== 'admin') {
+    return res.status(403).json({
+      error: 'Forbidden: You do not have permission to perform this action.',
+    });
   }
 
   const { id, ...updatedFields } = req.body;
@@ -17,6 +36,7 @@ export default async function handler(
 
   try {
     await updateAnnouncement(id, updatedFields);
+    await deleteCacheKey(redisClient as RedisClientType, 'announcements');
     res.status(200).json({ message: 'Announcement updated successfully' });
   } catch (error) {
     console.error(error);

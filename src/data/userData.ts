@@ -11,7 +11,6 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import { adminAuth } from '../firebase-admin';
-import { logError } from '../util';
 
 export interface User {
   _id: string;
@@ -60,8 +59,7 @@ export async function getAllUsers(): Promise<User[]> {
     const snapshot = await getDocs(collection(db, 'users'));
     return snapshot.docs.map((doc) => ({ _id: doc.id, ...doc.data() }) as User);
   } catch (error) {
-    logError(error, 'Failed to get all users');
-    throw new Error('Failed to get all users');
+    throw new Error(`Failed to get all users: ${error}`);
   }
 }
 
@@ -72,8 +70,7 @@ export async function getUserById(id: string): Promise<User | null> {
     if (!snapshot.exists()) return null;
     return { _id: snapshot.id, ...snapshot.data() } as User;
   } catch (error) {
-    logError(error, 'Failed to get user by id');
-    throw new Error('Failed to get user by id');
+    throw new Error(`Failed to get user by id: ${error}`);
   }
 }
 
@@ -89,21 +86,21 @@ export async function updateUser(
       await adminAuth.updateUser(id, { email: updatedFields.email });
     }
   } catch (error) {
-    logError(error, 'Failed to update user');
-    throw new Error('Failed to update user');
+    throw new Error(`Failed to update user: ${error}`);
   }
 }
 
-export async function deleteUser(id: string): Promise<string> {
+export async function deleteUser(id: string): Promise<boolean> {
   try {
     const docRef = doc(db, 'users', id);
     const snapshot = await getDoc(docRef);
     if (!snapshot.exists()) {
-      return 'dne';
+      return false; //using bool here to pass to delete.ts, false would mean user dne, true=user deleted, error=fail to delete
     }
+
     await deleteDoc(docRef);
     await adminAuth.deleteUser(id);
-    return 'success';
+    return true;
   } catch (error) {
     logError(error, 'Failed to delete user');
     return 'error';
