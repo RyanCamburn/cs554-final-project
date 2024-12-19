@@ -46,8 +46,9 @@ The emulators will start running on the following ports:
 ### Running the Redis Server:
 
 Install Redis-Stack:
-Windows: https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/windows/
-MacOs: https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/mac-os/
+- Windows: `https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/windows/`
+- MacOs: `https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/mac-os/`
+- Linux: `https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/linux/`
 
 Then, in Docker, start the redis-stack container
 
