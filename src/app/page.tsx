@@ -27,7 +27,7 @@ export default function Home() {
             your career journey.
           </Text>
           <Group>
-            <Link href="/register">
+            <Link href="/directory">
               <Button size="lg" variant="filled" color="dark">
                 Get Started
               </Button>
