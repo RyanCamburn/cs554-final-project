@@ -42,7 +42,7 @@ Install Redis-Stack:
 Windows: https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/windows/
 MacOs: https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/mac-os/
 
-To run to the cache, you can use the following command:
+To run to the cache, you can use the following command (make sure to flush your cache to see correct results):
 
 ```
 redis-server
@@ -64,8 +64,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Seeding the Database
 
-To seed development firestore and auth (make sure they are running first of course), run GET request to the following endpoint `/api/seed` using your browser or other tool of choice (`http://localhost:3000/api/seed`)
+To seed development firestore and auth (make sure they are running first of course), run GET request to the following endpoint `/api/seed` using your browser or other tool of choice like [Postman](https://www.postman.com/)
 
+- hit this endpoint: `http://localhost:3000/api/seed`
 - should see `Database seeded successfully` message when hitting the endpoint for the first time and more detailed logs in dev server console once it runs
 - If you'd like to reset database, manually go to firebase emulators and 'Clear all data' from the Authentication and Firestore tabs
 
