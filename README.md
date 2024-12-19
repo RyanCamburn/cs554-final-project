@@ -1,17 +1,12 @@
 # CS 554 Final Project - Mentor-Mentee CRM
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+The Mentor-Mentee CRM project aims to develop a Customer Relationship Manager (CRM) to enhance communication between participants and streamline the tracking of jobs, internships, and volunteer outcomes for mentees. This project is in collaboration with Asian American Dream (AAD), a non-profit organization running a mentorship program that connects students with industry professionals. We are creating this web application as our final project for CS 554 - Web Programming II.
 
 ## Getting Started
 
-### Running the container in Docker:
-
-```
-docker build -t aad-admin .
-docker run -p 3000:3000 aad-admin
-```
-
 ### Setup your .env.local file:
+
+Graders do not have to worry about this step as we provided our .env.local in the zip file
 
 1. Make a copy of .env.local.example and rename it to .env.local
 2. Follow the instructions to fill in the necessary environment variables
@@ -31,8 +26,6 @@ To run the emulators:
 2. Authenticate with Firebase and list your projects:
 
 ```bash
-firebase login
-firebase projects:list
 firebase emulators:start
 ```
 
@@ -50,40 +43,52 @@ Install Redis-Stack:
 - MacOs: `https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/mac-os/`
 - Linux: `https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/linux/`
 
-Then, in Docker, start the redis-stack container
+To run to the cache, you can use the following command (make sure to flush your cache to see correct results):
 
-To connect to the cache, you can run:
+```
+redis-server
+```
 
-```redis-cli```
+or (depending on what you installed)
 
-If you aren't using Docker, you can run:
-
-```redis-stack-server```
+```
+redis-stack-server
+```
 
 ### Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result!
 
-### Running seed file
+### Seeding the Database
 
-To seed development firestore and auth (make sure they are running first of course), run GET request to the following endpoint `/api/seed` using your browser or other tool of choice (`http://localhost:3000/api/seed`)
+To seed development firestore and auth (make sure they are running first of course), run GET request to the following endpoint `/api/seed` using your browser or other tool of choice like [Postman](https://www.postman.com/)
 
-- should see `Database seeded successfully` message and corresponding logs in console once it works
-- If you'd like to reset database, manually go to firebase emulators and 'Clear all data' for the Authentication and Firestore
+- hit this endpoint: `http://localhost:3000/api/seed`
+- should see `Database seeded successfully` message when hitting the endpoint for the first time and more detailed logs in dev server console once it runs
+- If you'd like to reset database, manually go to firebase emulators and 'Clear all data' from the Authentication and Firestore tabs
+
+Now that you have seeded your database you can use the provided developement accounts to login and view the application. Each account has a differnet role.
+
+```
+# Accounts
+Mentee User:
+	email: mentee@email.com
+	password: Mentee#1
+
+Mentor User:
+	email: mentor@email.com
+	password: Mentor#1
+
+Admin User:
+	email: admin@email.com
+	password: Admin#01
+```
 
 ## Project Description
-
-The Mentor-Mentee CRM project aims to develop a Customer Relationship Manager (CRM) to enhance communication between participants and streamline the tracking of jobs, internships, and volunteer outcomes for mentees. This project is in collaboration with Asian American Dream (AAD), a non-profit organization running a mentorship program that connects students with industry professionals. We are creating this web application as our final project for CS 554 - Web Programming II.
 
 **Team Members**
 
@@ -100,7 +105,6 @@ The Mentor-Mentee CRM project aims to develop a Customer Relationship Manager (C
 - **TailwindCSS**: Used for styling the User Interface.
 - **Redis**: Integrated for caching frequently accessed static assets and directory data.
 - **Cloud Firestore**: NoSQL database for storing core data.
-- **Docker**: Containerizes the application for consistent development, testing, and production environments.
 
 ## Core Features
 
@@ -110,9 +114,9 @@ The Mentor-Mentee CRM project aims to develop a Customer Relationship Manager (C
 - **Profile Pages**: Each user will have a personalized profile page displaying their information, including contact details, progress, and key achievements.
 - **Settings Page**: This feature will allow users to adjust their account settings and preferences, such as profile visibility and notification preferences.
 - **Forum Page**: This feature will allow users to message other users according to their selected industry preference.
-- **Dockerization**: Containerizing the application using Docker will help with consistent development environments and streamlined deployment processes.
+- **Events Page**: This feature will allow users to view events created by the admin.
 
-## ## Branch Naming Conventions:
+## Branch Naming Conventions:
 
 | Category      | Team's Branch Pattern              |
 | ------------- | ---------------------------------- |
@@ -129,7 +133,3 @@ _For reference of conventional branch patterns vs. what our team is using:_
 | Features      | `feature/[feature-name]`     |
 | Bug Fixes     | `bugfix/[bug-name]`          |
 | Documentation | `docs/[documentation-topic]` |
-
-```
-
-```
