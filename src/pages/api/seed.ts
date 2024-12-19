@@ -5,12 +5,12 @@ import { faker } from '@faker-js/faker';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { type User, createUserWithUid, updateUser } from '@/data/userData';
-import { auth } from '@/firebase';
+import { auth, db } from '@/firebase';
 import { adminAuth } from '@/firebase-admin';
 import { logError } from '@/util';
 import { INDUSTRIES } from '@/app/settings/page';
 import { type Event, createEvent } from '@/data/eventData';
-import { Timestamp } from 'firebase/firestore';
+import { addDoc, collection, Timestamp } from 'firebase/firestore';
 
 type CompleteUser = UserRegisterFormValues &
   Pick<User, 'industry' | 'jobTitle' | 'company'>;
@@ -239,6 +239,37 @@ const assignMentorsToMentees = async () => {
   }
 };
 
+const seedForumMessages = async () => {
+  const allUsers = await getAllUsers();
+  const mentorsAndMentees = allUsers.filter(
+    (user) => user.role === 'mentor' || user.role === 'mentee',
+  );
+
+  const messages = [];
+  for (let i = 0; i < 100; i++) {
+    const user = faker.helpers.arrayElement(mentorsAndMentees);
+    const industry = faker.helpers.arrayElement(INDUSTRIES);
+    const message = {
+      userId: user._id,
+      userName: `${user.firstName} ${user.lastName}`,
+      content: faker.lorem.sentence(),
+      role: user.role,
+      industry: industry,
+      timestamp: Timestamp.now().toDate().toString(),
+    };
+    messages.push(message);
+  }
+
+  try {
+    for (const message of messages) {
+      await addDoc(collection(db, 'messages'), message);
+    }
+    console.log(' - Forum Messages Seeded');
+  } catch (e) {
+    logError(e);
+  }
+};
+
 const main = async () => {
   // check if in developement mode
   if (process.env.NODE_ENV !== 'development') {
@@ -265,6 +296,10 @@ const main = async () => {
   // handle assignees
   assignMentorsToMentees();
   console.log('🚀 Assigned Mentors to Mentees');
+
+  // seed forum messages
+  await seedForumMessages();
+  console.log('🚀 Forum Messages Seeded');
 
   console.log('\n✅ Seed Complete!\n');
 };
