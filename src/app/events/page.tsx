@@ -90,8 +90,6 @@ export default function EventsPage() {
           event.endTime = Timestamp.fromDate(timestampToDate(event.endTime));
           // can include createdAt and updatedAt if needed
         });
-
-        console.log(events);
         setLoading(false);
         setEvents(events);
       } catch (e) {
@@ -446,9 +444,10 @@ export default function EventsPage() {
                   radius="sm"
                   className="border-2 border-sky-300 shadow-xl my-2"
                 >
-                  <Text>
-                    <strong>Title:</strong> {event.eventName}
+                  <Text className="text-lg font-semibold pb-2 border-b-2 mb-2">
+                    {event.eventName}
                   </Text>
+
                   <Text>
                     <strong>Date:</strong>{' '}
                     {event.date
