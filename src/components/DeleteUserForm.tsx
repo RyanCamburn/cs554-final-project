@@ -38,6 +38,7 @@ export default function DeleteUserForm() {
   return (
     <form
       onSubmit={deleteUserForm.onSubmit((values) => handleDeleteCookie(values))}
+      className="flex flex-col space-y-4"
     >
       <TextInput
         withAsterisk
@@ -46,7 +47,7 @@ export default function DeleteUserForm() {
         required
         {...deleteUserForm.getInputProps('id')}
       />
-      <Button type="submit" color="red">
+      <Button type="submit" color="red" className="mr-auto">
         Delete User
       </Button>
     </form>
