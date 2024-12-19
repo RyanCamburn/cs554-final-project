@@ -107,5 +107,5 @@ export async function deleteUser(id: string): Promise<string> {
   } catch (error) {
     logError(error, 'Failed to delete user');
     return 'error';
-    }
+  }
 }

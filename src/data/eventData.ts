@@ -10,9 +10,10 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase';
 
-interface Event {
-  _id?: string;
+export interface Event {
+  _id: string;
   eventName: string;
+  date: Timestamp;
   startTime: Timestamp;
   endTime: Timestamp;
   location: string;

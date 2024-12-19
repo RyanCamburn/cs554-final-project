@@ -18,7 +18,6 @@ import {
 import { IMaskInput } from 'react-imask';
 import { notifications } from '@mantine/notifications';
 
-
 export const GENDERS = ['Male', 'Female', 'Non-binary'] as const;
 export const INDUSTRIES = [
   'Technology',
@@ -102,7 +101,7 @@ export default function ProfilePage() {
     } else {
       setLoading(false);
     }
-  }, [user]);
+  }, [form, user]);
 
   const handleSubmit = async (values: FormValues) => {
     if (!form.isValid()) {
