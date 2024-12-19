@@ -1,27 +1,11 @@
 'use client';
 
-import { Center, Text, Title } from '@mantine/core';
-import { useAuth } from '@/sessions/AuthContext';
+import { Center, Title } from '@mantine/core';
 import { CreateAnnouncement } from '@/components/CreateAnnouncement';
 import DeleteUserForm from '@/components/DeleteUserForm';
 import ClaimsForm from '@/components/ClaimsForm';
 
 export default function AdminPage() {
-  const { user } = useAuth();
-
-  const isAdmin = user && user.customClaims.role === 'admin';
-  if (!user || !isAdmin) {
-    return (
-      <div>
-        <Center>
-          <Text size="xl" ta="center">
-            You are not an admin!
-          </Text>
-        </Center>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen p-16">
       <Center>
