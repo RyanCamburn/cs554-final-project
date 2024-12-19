@@ -69,6 +69,10 @@ function filterData(data: User[], search: string) {
   return data.filter((item) =>
     keys(data[0]).some((key) => {
       if (typeof item[key] === 'string') {
+        // This is here cause 'male' is in female so the search results are mixed
+        if (query === 'male') {
+          return item[key].toLowerCase() === query;
+        }
         return item[key].toLowerCase().includes(query);
       }
       return false;
@@ -136,6 +140,7 @@ export default function DirectoryTable({ data }: { data: User[] }) {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
+    setCurrentPage(1);
     setSortedData(
       sortData(data, { sortBy, reversed: reverseSortDirection, search: value }),
     );
