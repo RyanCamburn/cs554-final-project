@@ -32,7 +32,7 @@ export default function Login() {
       await loginUser(email, password);
       router.push('/');
     } catch (e) {
-      setError((e as Error).message);
+      setError('Invalid email or password. Please try again.');
     }
   }
 
