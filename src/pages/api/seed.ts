@@ -318,9 +318,9 @@ export default async function handler(
   } catch (error) {
     if (error instanceof Error) {
       console.error(error.message);
-      res.status(500).json({ error: error.message });
+      res.status(400).json({ error: error.message });
     } else {
-      res.status(500).json(error);
+      res.status(400).json(error);
     }
   }
 }
