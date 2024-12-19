@@ -39,7 +39,9 @@ export default async function handler(
 
   try {
     const announcements = await getAllAnnouncements();
-    await redisClient.set('announcements', JSON.stringify(announcements), { EX: 3600 });
+    await redisClient.set('announcements', JSON.stringify(announcements), {
+      EX: 3600,
+    });
     res.status(200).json(announcements);
   } catch (error) {
     console.error(error);
