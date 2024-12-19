@@ -102,6 +102,7 @@ export async function deleteUser(id: string): Promise<boolean> {
     await adminAuth.deleteUser(id);
     return true;
   } catch (error) {
-    throw new Error(`Failed to delete user: ${error}`);
+    logError(error, 'Failed to delete user');
+    return 'error';
   }
 }

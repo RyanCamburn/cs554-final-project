@@ -71,6 +71,11 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
       }
 
+      // TODO: IN PRODUCTION THIS SHOULD BE REMOVED
+      if (!AUTH_ENABLED) {
+        return NextResponse.next();
+      }
+
       console.error('Unhandled authentication error', { error });
 
       return redirectToLogin(request, {

@@ -9,6 +9,8 @@ import { auth } from '@/firebase';
 import { adminAuth } from '@/firebase-admin';
 import { logError } from '@/util';
 import { INDUSTRIES } from '@/app/settings/page';
+import { type Event, createEvent } from '@/data/eventData';
+import { Timestamp } from 'firebase/firestore';
 
 type CompleteUser = UserRegisterFormValues &
   Pick<User, 'industry' | 'jobTitle' | 'company'>;
@@ -16,6 +18,15 @@ type CompleteUser = UserRegisterFormValues &
 const MENTOR_AMOUNT = 100;
 const MENTEE_AMOUNT = 200;
 const MS_IN_DAY = 86400000;
+
+const generateEventName = () => {
+  const verb1 = faker.word.verb();
+  const adjective = faker.word.adjective();
+  const noun1 = faker.word.noun();
+  const verb2 = faker.word.verb();
+  const noun2 = faker.word.noun();
+  return `${verb1.charAt(0).toUpperCase() + verb1.slice(1)} ${adjective} ${noun1} ${verb2} ${noun2}`;
+};
 
 const intakeUser = async (user: CompleteUser) => {
   try {
@@ -119,6 +130,37 @@ const seed = async () => {
   try {
     await createAnnouncement(announcement);
     console.log(' - Announcement Seeded');
+  } catch (e) {
+    logError(e);
+  }
+
+  // create 5 sample events
+  const eventDates = [2, 6, 10, 14, 21].map((days) => {
+    const baseDate = new Date();
+    baseDate.setHours(0, 0, 0, 0); // Set the time to midnight
+    baseDate.setDate(baseDate.getDate() + days); // Add the specified number of days
+    return baseDate.getTime();
+  });
+
+  const events: Omit<Event, '_id' | 'createdAt' | 'updatedAt'>[] =
+    eventDates.map((dateMillis) => ({
+      eventName: generateEventName(),
+      description: faker.lorem.sentence(),
+      date: Timestamp.fromMillis(dateMillis),
+      location: faker.location.city(),
+      startTime: Timestamp.fromDate(
+        new Date(new Date(dateMillis).toLocaleDateString() + ' 10:00 AM'),
+      ),
+      endTime: Timestamp.fromDate(
+        new Date(new Date(dateMillis).toLocaleDateString() + ' 12:00 PM'),
+      ),
+    }));
+
+  try {
+    for (const event of events) {
+      await createEvent(event);
+    }
+    console.log(' - Events Seeded');
   } catch (e) {
     logError(e);
   }

@@ -1,0 +1,23 @@
+/* Custom CSS for div inside of dependency that can only be selected like this  */
+react-calendar,
+.react-calendar *,
+.react-calendar *:before,
+.react-calendar *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  min-height: 50px;
+}
+
+/* Custom highlight for days with events */
+.event-marked {
+  background-color: darkblue;
+  border-radius: 100%;
+  color: white;
+}
+
+/* Custom highlight for days with events */
+.event-marked:hover {
+  border-radius: 100%;
+  color: black;
+}
