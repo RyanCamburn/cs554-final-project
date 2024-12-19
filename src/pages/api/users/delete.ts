@@ -38,8 +38,10 @@ export default async function handler(
   }
 
   try {
+    console.log('about to delete in api');
     const userDeleted = await deleteUser(id);
-    if (!userDeleted) {
+    console.log(userDeleted);
+    if (userDeleted == 'dne') {
       return res.status(404).json({ error: 'User does not exist' });
     }
     await deleteCacheKey(redisClient as RedisClientType, 'users');
