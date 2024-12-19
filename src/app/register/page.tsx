@@ -127,7 +127,7 @@ export default function Register() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
+    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-16">
       <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-md p-8">
         <h2 className="text-2xl font-bold text-center text-white">Register</h2>
         <form
@@ -166,63 +166,6 @@ export default function Register() {
               label="Gender"
               placeholder="Male"
               data={GENDERS.map((gender) => ({ value: gender, label: gender }))}
-              {...registrationForm.getInputProps('gender')}
-              classNames={{
-                input: 'custom-form-input',
-                label: 'custom-form-label',
-              }}
-            />
-          </div>
-          <div className="mb-4">
-            <Select
-              withAsterisk
-              label="Role"
-              placeholder="Mentor"
-              data={[
-                { value: 'mentor', label: 'Mentor' },
-                { value: 'mentee', label: 'Mentee' },
-              ]}
-              {...registrationForm.getInputProps('role')}
-              classNames={{
-                input: 'custom-form-input',
-                label: 'custom-form-label',
-              }}
-            />
-          </div>
-          <div className="mb-4">
-            <TextInput
-              withAsterisk
-              label="First Name"
-              placeholder="John"
-              {...registrationForm.getInputProps('firstName')}
-              classNames={{
-                input: 'custom-form-input',
-                label: 'custom-form-label',
-              }}
-            />
-          </div>
-          <div className="mb-4">
-            <TextInput
-              withAsterisk
-              label="Last Name"
-              placeholder="Smith"
-              {...registrationForm.getInputProps('lastName')}
-              classNames={{
-                input: 'custom-form-input',
-                label: 'custom-form-label',
-              }}
-            />
-          </div>
-          <div className="mb-4">
-            <Select
-              withAsterisk
-              label="Gender"
-              placeholder="Male"
-              data={[
-                { value: 'male', label: 'Male' },
-                { value: 'female', label: 'Female' },
-                { value: 'non-binary', label: 'Non-binary' },
-              ]}
               {...registrationForm.getInputProps('gender')}
               classNames={{
                 input: 'custom-form-input',
