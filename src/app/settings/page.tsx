@@ -101,7 +101,7 @@ export default function ProfilePage() {
     } else {
       setLoading(false);
     }
-  }, [form, user]);
+  }, [user]);
 
   const handleSubmit = async (values: FormValues) => {
     if (!form.isValid()) {
@@ -135,7 +135,6 @@ export default function ProfilePage() {
         }),
       });
       const data = await response.json();
-      console.log('Update response:', data);
       if (response.ok) {
         notifications.show({
           message: 'Successfully updated profile',
@@ -158,7 +157,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center flex-col h-32 backdrop-blur-xl">
+      <div className="flex justify-center items-center flex-col min-h-screen backdrop-blur-xl">
         <Loader />
         <p className="text-lg">Loading profile...</p>
       </div>
@@ -166,7 +165,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen py-12 flex flex-col justify-center items-center">
+    <div className="min-h-screen py-12 flex flex-col items-center">
       {/* Header Section */}
       <div className="text-white px-8 mb-8 max-w-3xl w-full">
         <Title order={1} className="text-2xl font-bold mb-2">
