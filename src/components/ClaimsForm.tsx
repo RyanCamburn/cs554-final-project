@@ -65,7 +65,10 @@ export default function ClaimsForm() {
   };
 
   return (
-    <form onSubmit={claimForm.onSubmit((values) => handleClaimSubmit(values))}>
+    <form
+      onSubmit={claimForm.onSubmit((values) => handleClaimSubmit(values))}
+      className="flex flex-col space-y-4"
+    >
       <Select
         label="User"
         placeholder="Select a user"
@@ -90,7 +93,7 @@ export default function ClaimsForm() {
         ]}
         {...claimForm.getInputProps('role')}
       />
-      <Button type="submit" color="blue">
+      <Button type="submit" color="blue" className="mr-auto">
         Set User Claims
       </Button>
     </form>
