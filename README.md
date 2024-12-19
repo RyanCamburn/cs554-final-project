@@ -45,7 +45,19 @@ The emulators will start running on the following ports:
 
 ### Running the Redis Server:
 
-TODO:
+Install Redis-Stack:
+Windows: https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/windows/
+MacOs: https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/mac-os/
+
+Then, in Docker, start the redis-stack container
+
+To connect to the cache, you can run:
+
+```redis-cli```
+
+If you aren't using Docker, you can run:
+
+```redis-stack-server```
 
 ### Run the development server:
 
