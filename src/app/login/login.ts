@@ -15,6 +15,6 @@ export async function loginUser(
       },
     });
   } catch (e) {
-    throw new Error((e as Error).message);
+    throw new Error('Failed to login.');
   }
 }
